@@ -1,0 +1,3 @@
+En este trabajo práctico presentaremos el diseño de una base de datos para la inscripción en un mundial de taekwondo. Debemos guardar los datos correspondientes a los competidores, coaches y árbitros, y los resultados obtenidos en cada categoría de cada modalidad.
+
+En primer lugar mostraremos el diagrama entidad-relación, junto con las restricciones y suposiciones expresadas en lenguaje natural. Luego presentaremos el modelo relacional derivado, con el que se hará la base de datos real en MSS.
