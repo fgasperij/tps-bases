@@ -292,9 +292,9 @@ DROP TABLE IF EXISTS `mundial_taekwondo`.`Participacion` ;
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Participacion` (
   `IDParticipacion` INT NOT NULL,
   `Resultado` VARCHAR(45) NULL,
-  `IDCategoria` INT NULL,
-  `NombreModalidad` VARCHAR(45) NULL,
-  `NumeroCertificadoGraduacionCoach` TINYINT(3) NULL,
+  `IDCategoria` INT NOT NULL,
+  `NombreModalidad` VARCHAR(45) NOT NULL,
+  `NumeroCertificadoGraduacionCoach` INT NOT NULL,
   `Tipo` VARCHAR(45) NULL,
   PRIMARY KEY (`IDParticipacion`),
   INDEX `IDCategoria_idx` (`IDCategoria` ASC),
@@ -325,7 +325,7 @@ DROP TABLE IF EXISTS `mundial_taekwondo`.`ParticipacionIndividual` ;
 
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`ParticipacionIndividual` (
   `IDParticipacion` INT NOT NULL,
-  `NumeroCertificadoGraduacionCompetidor` INT NULL,
+  `NumeroCertificadoGraduacionCompetidor` INT NOT NULL,
   PRIMARY KEY (`IDParticipacion`),
   INDEX `NumeroCertificadoGraduacion_idx` (`NumeroCertificadoGraduacionCompetidor` ASC),
   CONSTRAINT `IDParticipacion`
