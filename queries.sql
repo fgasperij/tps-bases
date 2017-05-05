@@ -37,12 +37,12 @@ where m.placaInstructor = cr.placaInstructor) as mr
 
 select nombrePais, oro, plata, bronce
 from
-(select nombrePais, count(resultado = 1) as oro, count(resultado = 2) as plata, count(resultado = 3) as bronce
+(select nombrePais sum(case when resultado = 1 then 1 else null end) as oro, sum(case when resultado = 2 then 1 else null end) as plata, sum(case when resultado = 3 then 1 else null end) as bronce
 from resultadosPais
 group by nombrePais)
-where oro = MAX(oro) or plata = MAX(plata) or bronce = MAX(bronce)
 
--- esa última línea no sé si anda. Además creo que estoy contando una medalla por integrante de equipo.
+
+-- falta agarrar el max. Además creo que estoy contando una medalla por integrante de equipo.
 
 -- El medallero por escuela.
 
@@ -60,7 +60,7 @@ from m maestro,
     and e.certificadoGraduacion = c.certificadoGraduacion) as cr)
 where m.placaInstructor = cr.placaInstructor) as mr
 
-select escuela, count(resultado = 1) as oro, count(resultado = 2) as plata, count(resultado = 3) as bronce
+select escuela, sum(case when resultado = 1 then 1 else null end) as oro, sum(case when resultado = 2 then 1 else null end) as plata, sum(case when resultado = 3 then 1 else null end) as bronce
 from resultadosEscuela
 group by escuela
 order by oro desc
@@ -68,12 +68,12 @@ order by oro desc
 -- Sabiendo que las medallas de oro suman 3 puntos, las de plata 2 y las de bronce 1
 punto, se quiere realizar un ranking de puntaje por país y otro por escuela.
 
-select nombrePais, count(resultado = 1) * 3 + count(resultado = 2) *2 + count(resultado = 3) as puntaje
+select nombrePais, sum(case when resultado = 1 then 3 else null end) + sum(case when resultado = 2 then 2 else null end) + sum(case when resultado = 3 then 1 else null end) as puntaje
 from resultadosPais
 group by nombrePais
-order by puntaje desc
+order by puntaje desc;
 
-select escuela, count(resultado = 1) * 3 + count(resultado = 2) *2 + count(resultado = 3) as puntaje
+select escuela, , sum(case when resultado = 1 then 3 else null end) + sum(case when resultado = 2 then 2 else null end) + sum(case when resultado = 3 then 1 else null end) as puntaje
 from resultadosEscuela
 group by nombreEscuela
 sort by puntaje desc
