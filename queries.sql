@@ -21,26 +21,46 @@ select mcid.ncg, mcid.nombreModalidad, mcid.IDcategoria
 
 -- El país que obtuvo mayor cantidad de medallas de oro, plata y bronce.
 
-set resultadosPais = 
-    (select m.nombrepais, mr.resultado
-        from m maestro,
-        (select p.resultado, c.certificadoGraduacion
-            from participacionIndividual pi, participaciondeEquipo pe,  competidor c, participacion p
-            where (p.tipo = participacionDeEquipo 
-                   and p.idParticipacion = pe.idParticipacion 
-                   and c.nombreEquipo = pe.nombreEquipo)
-                  or (p.tipo = participacionIndividual 
-                      and c.certificadoGraduacion = pi.certificadoGraduacion
-                      and e.certificadoGraduacion = c.certificadoGraduacion) 
-        as cr)
-        where m.placaInstructor = cr.placaInstructor) 
-    as mr)
+--set resultadosPais = 
+--    (select m.nombrepais, mr.resultado
+--       from m maestro,
+--        (select p.resultado, c.certificadoGraduacion
+--            from (participacionIndividual pi inner join (participaciondeEquipo pe inner join competidor c)), participacion p
+--            where (p.tipo = participacionDeEquipo 
+--                   and p.idParticipacion = pe.idParticipacion 
+--                   and c.nombreEquipo = pe.nombreEquipo)
+--                  or (p.tipo = participacionIndividual 
+--                      and c.certificadoGraduacion = pi.certificadoGraduacion
+--                      and e.certificadoGraduacion = c.certificadoGraduacion) 
+--        as cr)
+--        where m.placaInstructor = cr.placaInstructor) 
+--    as mr)
 
-select nombrePais, oro, plata, bronce
-    from
-(select nombrePais, sum(case when resultado = 1 then 1 else null end) as oro, sum(case when resultado = 2 then 1 else null end) as plata, sum(case when resultado = 3 then 1 else null end) as bronce
+set resultadosPais =
+	select sum(p.resultado), ep.nombrePais
+	from (participacion p INNER JOIN participacionEquipo e on p.idParticipacion = e.idParticipacion)
+		INNER JOIN equiposPais ep on ep.nombreEquipo = e.nombreEquipo
+	where p.resultado <= 3
+	group by ep.nombrePais
+	union
+	select sum(p.resultado), m.nombrePais
+	from ((participacion p INNER JOIN participacionIndividual i on p.idParticipacion = i.idParticipacion)
+		INNER JOIN competidor c on i.numeroCertificadoGraduacion = c.numeroCertificadoGraduacion)
+		INNER JOIN maestro m on c.placaInstructor = m.placaInstructor
+	where p.resultado <= 3
+	group by m.nombrepais
+
+select sum(resultado), nombrePais
 from resultadosPais
-group by nombrePais)  -- Aca hay algo raro, tiene q ser null o 0 ?
+group by nombrePais
+order by sum(resultado)
+limit 1
+
+--select nombrePais, oro, plata, bronce
+--    from
+--(select nombrePais, sum(case when resultado = 1 then 1 else null end) as oro, sum(case when resultado = 2 then 1 else null end) as plata, sum(case when resultado = 3 then 1 else null end) as bronce
+--from resultadosPais
+--group by nombrePais)  -- Aca hay algo raro, tiene q ser null o 0 ?
 
 
 -- falta agarrar el max. Además creo que estoy contando una medalla por integrante de equipo.
@@ -74,12 +94,20 @@ select nombrePais, sum(case when resultado = 1 then 3 else null end) + sum(case 
     group by nombrePais
     order by puntaje desc;
 
-select escuela, , sum(case when resultado = 1 then 3 else null end) + sum(case when resultado = 2 then 2 else null end) + sum(case when resultado = 3 then 1 else null end) as puntaje
+select escuela, sum(case when resultado = 1 then 3 else null end) + sum(case when resultado = 2 then 2 else null end) + sum(case when resultado = 3 then 1 else null end) as puntaje
     from resultadosEscuela
     group by nombreEscuela
     sort by puntaje desc
 
 -- Dado un competidor, la lista de categorías donde haya participado y el resultado obtenido.
+
+create procedure getCategories
+@comp varchar(25)
+as
+select 
+from 
+where competidor = @comp;
+Go
 
 -- no sé como pasarle un competidor
 
