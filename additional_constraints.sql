@@ -2,7 +2,7 @@
 
 # La cantidad de coaches de una escuela debe ser ⅕ de la cantidad de alumnos
 DELIMITER $$
-CREATE TRIGGER porporcion_coachs_alumnos
+CREATE TRIGGER proporcion_coachs_alumnos
     AFTER INSERT ON Competidor
     FOR EACH ROW 
 BEGIN
