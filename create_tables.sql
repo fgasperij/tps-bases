@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Arbitro` (
   `NombrePais` VARCHAR(250) NULL,
   PRIMARY KEY (`PlacaArbitro`),
   INDEX `NombrePais_idx` (`NombrePais` ASC),
-  CONSTRAINT `NombrePais`
+  CONSTRAINT `NombrePaisArbitro`
     FOREIGN KEY (`NombrePais`)
     REFERENCES `mundial_taekwondo`.`Pais` (`NombrePais`)
     ON DELETE NO ACTION
@@ -144,17 +144,17 @@ CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`ArbitradoPor` (
   PRIMARY KEY (`NombreModalidad`, `IDCategoria`),
   INDEX `IDJurado_idx` (`IDJurado` ASC),
   INDEX `IDCategoria_idx` (`IDCategoria` ASC),
-  CONSTRAINT `IDJurado`
+  CONSTRAINT `IDJuradoArbitrado`
     FOREIGN KEY (`IDJurado`)
     REFERENCES `mundial_taekwondo`.`Jurado` (`IDJurado`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `NombreModalidad`
+  CONSTRAINT `NombreModalidadArbitrado`
     FOREIGN KEY (`NombreModalidad`)
     REFERENCES `mundial_taekwondo`.`Modalidad` (`NombreModalidad`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `IDCategoria`
+  CONSTRAINT `IDCategoriaArbitrado`
     FOREIGN KEY (`IDCategoria`)
     REFERENCES `mundial_taekwondo`.`Categoria` (`IDCategoria`)
     ON DELETE NO ACTION
@@ -254,7 +254,7 @@ DROP TABLE IF EXISTS `mundial_taekwondo`.`Coach` ;
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Coach` (
   `NumeroCertificadoGraduacion` INT NOT NULL,
   PRIMARY KEY (`NumeroCertificadoGraduacion`),
-  CONSTRAINT `NumeroCertificadoGraduacion`
+  CONSTRAINT `NumeroCertificadoGraduacionCoach`
     FOREIGN KEY (`NumeroCertificadoGraduacion`)
     REFERENCES `mundial_taekwondo`.`Registrado` (`NumeroCertificadoGraduacion`)
     ON DELETE NO ACTION
@@ -271,12 +271,12 @@ CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Inscripto` (
   `NumeroCertificadoGraduacion` INT NOT NULL,
   `NombreModalidad` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`NumeroCertificadoGraduacion`, `NombreModalidad`),
-  CONSTRAINT `NombreModalidad`
-    FOREIGN KEY ()
-    REFERENCES `mundial_taekwondo`.`Modalidad` ()
+  CONSTRAINT `NombreModalidadInscripto`
+    FOREIGN KEY (`NombreModalidad`)
+    REFERENCES `mundial_taekwondo`.`Modalidad` (`NombreModalidad`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `NumeroCertificadoGraduacion`
+  CONSTRAINT `NumeroCertificadoGraduacionInscripto`
     FOREIGN KEY (`NumeroCertificadoGraduacion`)
     REFERENCES `mundial_taekwondo`.`Competidor` (`NumeroCertificadoGraduacion`)
     ON DELETE NO ACTION
@@ -300,17 +300,17 @@ CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Participacion` (
   INDEX `IDCategoria_idx` (`IDCategoria` ASC),
   INDEX `NombreModalidad_idx` (`NombreModalidad` ASC),
   INDEX `NumeroCertificadoGraduacion_idx` (`NumeroCertificadoGraduacionCoach` ASC),
-  CONSTRAINT `IDCategoria`
+  CONSTRAINT `IDCategoriaParticipacion`
     FOREIGN KEY (`IDCategoria`)
     REFERENCES `mundial_taekwondo`.`Categoria` (`IDCategoria`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `NombreModalidad`
+  CONSTRAINT `NombreModalidadParticipacion`
     FOREIGN KEY (`NombreModalidad`)
     REFERENCES `mundial_taekwondo`.`Modalidad` (`NombreModalidad`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `NumeroCertificadoGraduacion`
+  CONSTRAINT `NumeroCertificadoGraduacionParticipacion`
     FOREIGN KEY (`NumeroCertificadoGraduacionCoach`)
     REFERENCES `mundial_taekwondo`.`Coach` (`NumeroCertificadoGraduacion`)
     ON DELETE NO ACTION
@@ -328,12 +328,12 @@ CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`ParticipacionIndividual` (
   `NumeroCertificadoGraduacionCompetidor` INT NOT NULL,
   PRIMARY KEY (`IDParticipacion`),
   INDEX `NumeroCertificadoGraduacion_idx` (`NumeroCertificadoGraduacionCompetidor` ASC),
-  CONSTRAINT `IDParticipacion`
+  CONSTRAINT `IDParticipacionIndividual`
     FOREIGN KEY (`IDParticipacion`)
     REFERENCES `mundial_taekwondo`.`Participacion` (`IDParticipacion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `NumeroCertificadoGraduacion`
+  CONSTRAINT `NumeroCertificadoGraduacionIndividual`
     FOREIGN KEY (`NumeroCertificadoGraduacionCompetidor`)
     REFERENCES `mundial_taekwondo`.`Competidor` (`NumeroCertificadoGraduacion`)
     ON DELETE NO ACTION
@@ -351,12 +351,12 @@ CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`ParticipacionDeEquipo` (
   `NombreEquipo` VARCHAR(200) NULL,
   PRIMARY KEY (`IDParticipacion`),
   INDEX `NombreEquipo_idx` (`NombreEquipo` ASC),
-  CONSTRAINT `NombreEquipo`
+  CONSTRAINT `NombreEquipoEquipo`
     FOREIGN KEY (`NombreEquipo`)
     REFERENCES `mundial_taekwondo`.`Equipo` (`NombreEquipo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `IDParticipacion`
+  CONSTRAINT `IDParticipacionEquipo`
     FOREIGN KEY (`IDParticipacion`)
     REFERENCES `mundial_taekwondo`.`Participacion` (`IDParticipacion`)
     ON DELETE NO ACTION
