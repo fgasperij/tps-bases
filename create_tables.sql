@@ -55,7 +55,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `mundial_taekwondo`.`Arbitro` ;
 
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Arbitro` (
-  `PlacaArbitro` INT NOT NULL,
+  `PlacaArbitro` INT NOT NULL AUTO_INCREMENT,
   `Graduacion` TINYINT(3) NULL,
   `NombreCompleto` VARCHAR(45) NULL,
   `NombrePais` VARCHAR(250) NULL,
@@ -75,7 +75,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `mundial_taekwondo`.`Jurado` ;
 
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Jurado` (
-  `IDJurado` INT NOT NULL,
+  `IDJurado` INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`IDJurado`))
 ENGINE = InnoDB;
 
@@ -121,7 +121,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `mundial_taekwondo`.`Categoria` ;
 
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Categoria` (
-  `IDCategoria` INT NOT NULL,
+  `IDCategoria` INT NOT NULL AUTO_INCREMENT,
   `Graduacion` TINYINT(3) NULL,
   `EdadMinima` INT NULL,
   `EdadMaxima` INT NULL,
@@ -192,7 +192,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `mundial_taekwondo`.`Registrado` ;
 
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Registrado` (
-  `NumeroCertificadoGraduacion` INT NOT NULL,
+  `NumeroCertificadoGraduacion` INT NOT NULL AUTO_INCREMENT,
   `Foto` BLOB NULL,
   `Graduacion` TINYINT(3) NULL,
   `NombreCompleto` VARCHAR(45) NULL,
@@ -290,7 +290,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `mundial_taekwondo`.`Participacion` ;
 
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Participacion` (
-  `IDParticipacion` INT NOT NULL,
+  `IDParticipacion` INT NOT NULL AUTO_INCREMENT,
   `Resultado` VARCHAR(45) NULL,
   `IDCategoria` INT NOT NULL,
   `NombreModalidad` VARCHAR(45) NOT NULL,
