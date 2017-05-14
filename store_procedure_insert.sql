@@ -223,14 +223,13 @@ END;
 $$
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS `agregar_participacion_equipo`;
-
 -- Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
 -- Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
 -- Todos los integrantes de un equipo deben ser de la misma escuela
 -- Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de todas sus participaciones de equipo.
 -- Las participaciones de equipo deben ser en la modalidad “combate por equipos”.
 
+DROP PROCEDURE IF EXISTS `agregar_participacion_equipo`;
 DELIMITER $$
 CREATE PROCEDURE `agregar_participacion_equipo`(
 `NombreEquipo` VARCHAR(200),
