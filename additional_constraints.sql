@@ -36,7 +36,7 @@ CREATE TRIGGER graduacion_maestro_va_de_1_a_6
     BEFORE INSERT ON Maestro
     FOR EACH ROW
 BEGIN
-    if NEW.Graduacion < 0 or NEW.Graduacion > 7
+    if NEW.Graduacion < 0 or NEW.Graduacion > 6
     then
         signal sqlstate '45000' set message_text = 'La graduación está fuera del rango válido. Debe ser entre 1ero y 6to dan.';
     end if;
