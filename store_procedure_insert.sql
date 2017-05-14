@@ -16,6 +16,7 @@ CREATE PROCEDURE `agregar_participacion_individual`(
     DECLARE graduation_competitor TINYINT(3);
     DECLARE valid boolean DEFAULT false;
     DECLARE last_id_participation INT;
+    DECLARE one_participation_per_modality boolean DEFAULT false;
 
 
     select c.Peso, TIMESTAMPDIFF(YEAR, c.FechaNacimiento, CURDATE()), c.Sexo, r.Graduacion
@@ -23,6 +24,12 @@ CREATE PROCEDURE `agregar_participacion_individual`(
                 from Competidor c, Registrado r
                 where NumeroCertificadoGraduacionCompetidor = c.NumeroCertificadoGraduacion
                     and r.NumeroCertificadoGraduacion = c.NumeroCertificadoGraduacion;
+
+    select if(ifnull(count(*), 0) > 0, false, true) into one_participation_per_modality
+        from Participacion p
+        inner join ParticipacionIndividual pi on pi.IDParticipacion = p.IDParticipacion
+        where p.NombreModalidad = NombreModalidad
+            and pi.NumeroCertificadoGraduacionCompetidor = NumeroCertificadoGraduacionCompetidor;
 
     select  if(ifnull(count(*), 0) > 0, true, false) into valid
             from Categoria c
@@ -36,7 +43,7 @@ CREATE PROCEDURE `agregar_participacion_individual`(
                 and NombreModalidad <> "Equipo"
                 and NumeroCertificadoGraduacionCoach in (select NumeroCertificadoGraduacion from Coach);
 
-    IF valid = true then
+    IF (valid = true and one_participation_per_modality = true) then
         INSERT INTO `Participacion`(
             `IDParticipacion`,
             `Resultado`,
@@ -67,6 +74,27 @@ CREATE PROCEDURE `agregar_participacion_individual`(
     END IF;
 
 END;
+
+$$
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `agregar_participacion_equipo`;
+
+-- Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
+-- Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
+-- Todos los integrantes de un equipo deben ser de la misma escuela
+-- Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de todas sus participaciones de equipo.
+-- Las participaciones de equipo deben ser en la modalidad “combate por equipos”.
+
+
+DELIMITER $$
+CREATE PROCEDURE `agregar_participacion_equipo`(
+`arg_name` INT,
+) BEGIN
+
+END;
+
 
 $$
 DELIMITER ;
