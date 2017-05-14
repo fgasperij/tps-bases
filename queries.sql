@@ -1,7 +1,7 @@
 -- El listado de inscriptos en cada categoría para el armado de llaves
 -- ¿Es necesario devolver los equipos también?
 -- TODO: agregar una query separada para los equipos o un group by a esta.
-SELECT comp.NumeroCertificadoGraduacion, i.NombreModalidad, cat.IDCategoria
+SELECT Competidor.NumeroCertificadoGraduacion, Inscripto.NombreModalidad, Categoria.IDCategoria
 FROM Inscripto i
 INNER JOIN SeDivideEn sde on sde.NombreModalidad = i.NombreModalidad
 INNER JOIN Categoria cat on cat.IDCategoria = sde.IDCategoria
@@ -14,7 +14,7 @@ WHERE
   and ((cat.EdadMinima is null and (FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) < cat.EdadMaxima)
       or ((FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) >= cat.EdadMinima and FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) < cat.EdadMaxima)))
   and comp.Sexo = cat.Sexo
-  and comp.Graduacion = cat.Graduacion
+  and (cat.Graduacion is null or comp.Graduacion = cat.Graduacion)
 order by i.NombreModalidad, cat.IDCategoria;
 
 

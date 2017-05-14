@@ -62,73 +62,47 @@ insert into SeDivideEn
   from Categoria
   where Categoria.Graduacion is not null and Categoria.PesoMinimo is not null and Categoria.PesoMaximo is not null;
 
-insert into Pais
-	values("Sealand");
+insert into Pais values("Sealand");
 
 -- (PlacaInstructor, Escuela, NombreCompleto, Graduacion, NombrePais)
-insert into Maestro
-	values(1, "Escuela 1", "Maestro", 1, "Sealand");
+insert into Maestro values(1, "Escuela 1", "Maestro", 1, "Sealand");
 
 -- (NumeroCertificadoGraduacion, Foto, Graduacion, NombreCompleto, PlacaInstructor)
-insert into Registrado
-	values(1, null, 1, "A A", 1);
-insert into Registrado
-	values(2, null, 1, "B B", 1);
-insert into Registrado
-	values(3, null, 1, "C C", 1);
-insert into Registrado
-	values(4, null, 1, "D D", 1);
-insert into Registrado
-	values(5, null, 1, "E E", 1);
-insert into Registrado
-	values(6, null, 1, "F F", 1);
-insert into Registrado
-	values(7, null, 1, "G G", 1);
-insert into Registrado
-	values(8, null, 1, "H H", 1);
+insert into Registrado values(1, null, 1, "A A", 1);
+insert into Registrado values(2, null, 2, "B B", 1);
+insert into Registrado values(3, null, 3, "C C", 1);
+insert into Registrado values(4, null, 4, "D D", 1);
+insert into Registrado values(5, null, 5, "E E", 1);
+insert into Registrado values(6, null, 6, "F F", 1);
+insert into Registrado values(7, null, 1, "G G", 1);
+insert into Registrado values(8, null, 1, "H H", 1);
 
 -- (NumeroCertificadoGraduacion, Peso, DNI, FechaNacimiento, Sexo, RolEquipo, NombreEquipo)
-insert into Competidor
-	values (1, 60, 12345678, 1994-05-06, "M", null, null);
-insert into Competidor
-	values (2, 60, 12345678, 1994-05-06, "M", null, null);
-insert into Competidor
-	values (3, 60, 12345678, 1994-05-06, "M", null, null);
-insert into Competidor
-	values (4, 60, 12345678, 1994-05-06, "M", null, null);
-insert into Competidor
-	values (5, 60, 12345678, 1994-05-06, "M", null, null);
+insert into Competidor values (1, 60, 12345678, "1994-05-06", "M", null, null);
+insert into Competidor values (2, 70, 12345678, "1994-05-06", "M", null, null);
+insert into Competidor values (3, 80, 12345678, "1994-05-06", "M", null, null);
+insert into Competidor values (4, 90, 12345678, "1994-05-06", "M", null, null);
+insert into Competidor values (5, 60, 12345678, "1994-05-06", "M", null, null);
 
-insert into Inscripto
-	values (1, "Combate");
-insert into Inscripto
-	values (2, "Combate");
-insert into Inscripto
-	values (3, "Combate");
-insert into Inscripto
-	values (1, "Formas");
-insert into Inscripto
-	values (2, "Formas");
-insert into Inscripto
-	values (3, "Formas");
-insert into Inscripto
-	values (4, "Formas");
+-- (NumeroCertificadoGraduacion, NombreModalidad)
+insert into Inscripto values (1, "Combate");
+insert into Inscripto values (2, "Combate");
+insert into Inscripto values (3, "Combate");
+insert into Inscripto values (1, "Formas");
+insert into Inscripto values (2, "Formas");
+insert into Inscripto values (3, "Formas");
+insert into Inscripto values (4, "Formas");
 
-insert into Coach
-	values (8);
+-- (NumeroCertificadoGraduacion)
+insert into Coach values (8);
 
-insert into Participacion
-	values(1, 1, 7, "Formas", 8, "Individual");
+-- (IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach)
+insert into Participacion values(1, 1, 7, "Formas", 8, "Individual");
+insert into Participacion values(2, 2, 7, "Formas", 8, "Individual");
+insert into Participacion values(3, 3, 7, "Formas", 8, "Individual");
 
-insert into Participacion
-	values(2, 2, 7, "Formas", 8, "Individual");
-
-insert into Participacion
-	values(3, 3, 7, "Formas", 8, "Individual");
-
+-- (IDParticipacion, NumeroCertificadoGraduacion)
 insert into ParticipacionIndividual values(1, 1);
-
 insert into ParticipacionIndividual values(2, 2);
-
 insert into ParticipacionIndividual values(3, 3);
 
