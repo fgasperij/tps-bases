@@ -37,6 +37,31 @@ insert into Categoria
   ) Peso
   where Categoria.Graduacion is not null;
 
+-- (IDCategoria, NombreModalidad, Ring)
+-- Combate por equipos, Salto y Rotura de potencia
+insert into SeDivideEn
+  select Categoria.IDCategoria, Modalidad.NombreModalidad, floor(rand()*10)+1
+  from (
+  	select *
+  	from Categoria
+  	where Categoria.Graduacion is null and Categoria.PesoMinimo is null and Categoria.PesoMaximo is null
+  ) Categoria
+  cross join (
+    select NombreModalidad
+    from Modalidad
+    where NombreModalidad = "Combate por equipos" or NombreModalidad = "Salto" or NombreModalidad = "Rotura de potencia"
+  ) Modalidad;
+-- Formas
+insert into SeDivideEn
+  select Categoria.IDCategoria, "Formas", floor(rand()*10)+1
+  from Categoria
+  where Categoria.Graduacion is not null and Categoria.PesoMinimo is null and Categoria.PesoMaximo is null;
+-- Combate
+insert into SeDivideEn
+  select Categoria.IDCategoria, "Combate", floor(rand()*10)+1
+  from Categoria
+  where Categoria.Graduacion is not null and Categoria.PesoMinimo is not null and Categoria.PesoMaximo is not null;
+
 insert into Pais
 	values("Sealand");
 
@@ -91,9 +116,6 @@ insert into Inscripto
 
 insert into Coach
 	values (8);
-
-insert into SeDivideEn
-	values (7, "Formas", 1);
 
 insert into Participacion
 	values(1, 1, 7, "Formas", 8, "Individual");
