@@ -34,7 +34,7 @@ CREATE PROCEDURE `agregar_participacion_individual`(
                 and c.EdadMaxima >= age_competitor
                 and c.EdadMinima <= age_competitor
                 and NombreModalidad <> "Equipo"
-                and NumeroCertificadoGraduacionCoach in (select NumeroCertificadoGraduacion from Coach)
+                and NumeroCertificadoGraduacionCoach in (select NumeroCertificadoGraduacion from Coach);
 
     IF valid = true then
         INSERT INTO `Participacion`(
@@ -62,6 +62,8 @@ CREATE PROCEDURE `agregar_participacion_individual`(
             last_id_participation,
             NumeroCertificadoGraduacionCompetidor
         );
+    ELSE
+        signal sqlstate '45000' set message_text = 'Combinacion de parametros invalida';
     END IF;
 
 END;
