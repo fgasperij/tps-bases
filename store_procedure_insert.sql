@@ -1,20 +1,25 @@
+USE mundial_taekwondo;
+
+DROP PROCEDURE IF EXISTS `agregar_participacion_individual`;
+
+DELIMITER $$
 CREATE PROCEDURE `agregar_participacion_individual`(
-`Resultado` VARCHAR(45) NULL,
-`NumeroCertificadoGraduacionCoach` INT NOT NULL,
-`NombreModalidad` VARCHAR(45) NOT NULL,
-`Tipo` VARCHAR(45) NULL,
-`IDCategoria` INT NOT NULL,
-`NumeroCertificadoGraduacionCompetidor` INT NOT NULL
+`Resultado` VARCHAR(45),
+`NumeroCertificadoGraduacionCoach` INT,
+`NombreModalidad` VARCHAR(45),
+`IDCategoria` INT,
+`NumeroCertificadoGraduacionCompetidor` INT
 ) BEGIN
     DECLARE weight_competitor INT;
     DECLARE age_competitor INT;
     DECLARE gender_competitor VARCHAR(45);
     DECLARE graduation_competitor TINYINT(3);
     DECLARE valid boolean DEFAULT false;
-    DECLARE last_id_participation INT NOT NULL;
+    DECLARE last_id_participation INT;
 
 
-    select c.Peso, c.Edad, c.Sexo, r.Graduacion into weight_competitor, age_competitor, gender_competitor, graduation_competitor
+    select c.Peso, TIMESTAMPDIFF(YEAR, c.FechaNacimiento, CURDATE()), c.Sexo, r.Graduacion
+            into weight_competitor, age_competitor, gender_competitor, graduation_competitor
                 from Competidor c, Registrado r
                 where NumeroCertificadoGraduacionCompetidor = c.NumeroCertificadoGraduacion
                     and r.NumeroCertificadoGraduacion = c.NumeroCertificadoGraduacion;
@@ -30,7 +35,6 @@ CREATE PROCEDURE `agregar_participacion_individual`(
                 and c.EdadMinima <= age_competitor
                 and NombreModalidad <> "Equipo"
                 and NumeroCertificadoGraduacionCoach in (select NumeroCertificadoGraduacion from Coach)
-                and Tipo = "Individual";
 
     IF valid = true then
         INSERT INTO `Participacion`(
@@ -42,12 +46,12 @@ CREATE PROCEDURE `agregar_participacion_individual`(
             `Tipo`
         )
         VALUES(
-            NULL, --para crear nuevo id
+            NULL, -- para crear nuevo id
             Resultado,
             IDCategoria,
             NombreModalidad,
             NumeroCertificadoGraduacionCoach,
-            Tipo
+            'Individual'
         );
         select LAST_INSERT_ID() into last_id_participation;
         INSERT INTO `ParticipacionIndividual`(
@@ -61,3 +65,6 @@ CREATE PROCEDURE `agregar_participacion_individual`(
     END IF;
 
 END;
+
+$$
+DELIMITER ;
