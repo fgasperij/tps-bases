@@ -1,17 +1,22 @@
--- Inscriptos por categoría para llave
-
+-- El listado de inscriptos en cada categoría para el armado de llaves
+-- ¿Es necesario devolver los equipos también?
+-- TODO: agregar una query separada para los equipos o un group by a esta.
 SELECT comp.NumeroCertificadoGraduacion, i.NombreModalidad, cat.IDCategoria
-    FROM
-        (Inscripto i INNER JOIN SeDivideEn sde on sde.NombreModalidad = i.NombreModalidad)
-	INNER JOIN Categoria cat on cat.IDCategoria = sde.IDCategoria
-	INNER JOIN Competidor comp on comp.NumeroCertificadoGraduacion = i.NumeroCertificadoGraduacion
-    WHERE 
-        (cat.PesoMaximo is null or (comp.Peso <= cat.PesoMaximo and comp.Peso >= cat.PesoMinimo))
-        and (cat.EdadMinima is null or ((FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) >= cat.EdadMinima and FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) <= cat.EdadMaxima)))
-        and comp.Sexo = cat.Sexo
-        and comp.Graduacion = cat.Graduacion;
+FROM Inscripto i
+INNER JOIN SeDivideEn sde on sde.NombreModalidad = i.NombreModalidad
+INNER JOIN Categoria cat on cat.IDCategoria = sde.IDCategoria
+INNER JOIN Competidor comp on comp.NumeroCertificadoGraduacion = i.NumeroCertificadoGraduacion
+WHERE
+  ((cat.PesoMaximo is null and cat.PesoMinimo is null)
+    or (cat.PesoMaximo is null and comp.Peso >= cat.PesoMinimo)
+    or (comp.Peso < cat.PesoMaximo and comp.Peso >= cat.PesoMinimo)
+    or (comp.Peso < cat.PesoMaximo and cat.PesoMinimo is null))
+  and ((cat.EdadMinima is null and (FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) < cat.EdadMaxima)
+      or ((FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) >= cat.EdadMinima and FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) < cat.EdadMaxima)))
+  and comp.Sexo = cat.Sexo
+  and comp.Graduacion = cat.Graduacion
+order by i.NombreModalidad, cat.IDCategoria;
 
--- devolver Equipos en vez de personas?
 
 -- El país que obtuvo mayor cantidad de medallas de oro, plata y bronce.
 

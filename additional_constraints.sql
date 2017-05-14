@@ -103,6 +103,7 @@ insert into Registrado values (null, 'La foto', 10, 'Armando Paredes', 10);
 
 
 
+
 -- En cada jurado hay:
 -- un árbitro con rol “presidente de mesa”
 -- un “árbitro central”
@@ -110,3 +111,4 @@ insert into Registrado values (null, 'La foto', 10, 'Armando Paredes', 10);
 -- tres o más “suplentes”.
 -- La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado.
 -- El coach de una participación debe ser de la misma escuela que el competidor
+-- Los competidores no deben tener Rol ni NombreEquipo ya que se utilizarán SPs específicos para asignárselos.
