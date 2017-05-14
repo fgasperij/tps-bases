@@ -4,27 +4,47 @@ insert into Modalidad values ("Rotura de potencia");
 insert into Modalidad values ("Formas");
 insert into Modalidad values ("Salto");
 
-insert into Categoria values (1, 1, 14, 17, "M", null, null);
-insert into Categoria values (2, 2, 14, 17, "M", null, null);
-insert into Categoria values (3, 3, 14, 17, "M", null, null);
-insert into Categoria values (4, 4, 14, 17, "M", null, null);
-insert into Categoria values (5, 5, 14, 17, "M", null, null);
-insert into Categoria values (6, 6, 14, 17, "M", null, null);
-
+-- (IDCategoria, Graduacion, EdadMinima, EdadMaxima, Sexo, PesoMinimo, PesoMaximo)
+-- Rotura de potencia, Salto y Combate por equipos
+insert into Categoria values (1, null, 14, 17, "M", null, null);
+insert into Categoria values (2, null, 18, 35, "M", null, null);
+insert into Categoria values (3, null, 14, 17, "F", null, null);
+insert into Categoria values (4, null, 18, 35, "F", null, null);
+-- Formas
 insert into Categoria
-	select IDCategoria + 6, Graduacion, EdadMinima, EdadMaxima, Sexo, 18, 35
-	from Categoria;
-
+	select null, Graduacion.Graduacion, EdadMinima, EdadMaxima, Sexo, null, null
+  from Categoria
+  cross join (
+    select 1 as Graduacion
+    union all select 2 as Graduacion
+    union all select 3 as Graduacion
+    union all select 4 as Graduacion
+    union all select 5 as Graduacion
+    union all select 6 as Graduacion
+  ) Graduacion;
+-- Combate
 insert into Categoria
-	select IDCategoria + 12, Graduacion, EdadMinima, EdadMaxima, "F", PesoMinimo, PesoMaximo
-	from Categoria;
+	select null, Graduacion, EdadMinima, EdadMaxima, Sexo, Peso.PesoMinimo, Peso.PesoMaximo
+  from Categoria
+  cross join (
+    select 54 as PesoMinimo, 58 as PesoMaximo
+    union all select 58 as PesoMinimo, 63 as PesoMaximo
+    union all select 63 as PesoMinimo, 68 as PesoMaximo
+    union all select 68 as PesoMinimo, 74 as PesoMaximo
+    union all select 74 as PesoMinimo, 80 as PesoMaximo
+    union all select 80 as PesoMinimo, 87 as PesoMaximo
+    union all select 87 as PesoMinimo, null as PesoMaximo
+  ) Peso
+  where Categoria.Graduacion is not null;
 
 insert into Pais
 	values("Sealand");
 
+-- (PlacaInstructor, Escuela, NombreCompleto, Graduacion, NombrePais)
 insert into Maestro
 	values(1, "Escuela 1", "Maestro", 1, "Sealand");
 
+-- (NumeroCertificadoGraduacion, Foto, Graduacion, NombreCompleto, PlacaInstructor)
 insert into Registrado
 	values(1, null, 1, "A A", 1);
 insert into Registrado
@@ -42,6 +62,7 @@ insert into Registrado
 insert into Registrado
 	values(8, null, 1, "H H", 1);
 
+-- (NumeroCertificadoGraduacion, Peso, DNI, FechaNacimiento, Sexo, RolEquipo, NombreEquipo)
 insert into Competidor
 	values (1, 60, 12345678, 1994-05-06, "M", null, null);
 insert into Competidor

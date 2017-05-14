@@ -196,3 +196,4 @@ insert into ParticipacionIndividual values (2, 1);
 -- tres o más “suplentes”.
 -- La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado.
 -- El coach de una participación debe ser de la misma escuela que el competidor
+-- Los competidores no deben tener Rol ni NombreEquipo ya que se utilizarán SPs específicos para asignárselos.
