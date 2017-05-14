@@ -1,6 +1,6 @@
-# Restricciones
+-- Restricciones
 
-# La cantidad de coaches de una escuela debe ser ⅕ de la cantidad de alumnos
+-- La cantidad de coaches de una escuela debe ser ⅕ de la cantidad de alumnos
 DELIMITER $$
 CREATE TRIGGER proporcion_coachs_alumnos
     BEFORE INSERT ON Competidor
@@ -27,17 +27,92 @@ BEGIN
 END$$
 DELIMITER ;
 
-# La graduación va de 1er dan a 6to dan
-# Para toda participación:
+-- La graduación va de 1er dan a 6to dan
+
+-- Maestro
+drop trigger if exists graduacion_maestro_va_de_1_a_6;
+DELIMITER $$
+CREATE TRIGGER graduacion_maestro_va_de_1_a_6
+    BEFORE INSERT ON Maestro
+    FOR EACH ROW
+BEGIN
+    if NEW.Graduacion < 0 or NEW.Graduacion > 7
+    then
+        signal sqlstate '45000' set message_text = 'La graduación está fuera del rango válido. Debe ser entre 1ero y 6to dan.';
+    end if;
+END$$
+DELIMITER ;
+
+insert into Pais value ('Argentina');
+insert into Maestro values (null, 'Escuela TK', 'Esteban Quito', 3, 'Argentina');
+insert into Maestro values (null, 'Escuela TK', 'Esteban Quito', 8, 'Argentina');
+
+
+-- Árbitro
+drop trigger if exists graduacion_arbitro_va_de_1_a_6;
+DELIMITER $$
+CREATE TRIGGER graduacion_arbitro_va_de_1_a_6
+    BEFORE INSERT ON Arbitro
+    FOR EACH ROW
+BEGIN
+    if NEW.Graduacion < 1 or NEW.Graduacion > 6
+    then
+        signal sqlstate '45000' set message_text = 'La graduación está fuera del rango válido. Debe ser entre 1ero y 6to dan.';
+    end if;
+END$$
+DELIMITER ;
+
+insert into Pais value ('Argentina');
+insert into Arbitro values (null, 0, 'Esteban Quito', 'Argentina');
+
+-- Categoría
+drop trigger if exists graduacion_categoria_va_de_1_a_6;
+DELIMITER $$
+CREATE TRIGGER graduacion_categoria_va_de_1_a_6
+    BEFORE INSERT ON Categoria
+    FOR EACH ROW
+BEGIN
+    if NEW.Graduacion < 1 or NEW.Graduacion > 6
+    then
+        signal sqlstate '45000' set message_text = 'La graduación está fuera del rango válido. Debe ser entre 1ero y 6to dan.';
+    end if;
+END$$
+DELIMITER ;
+
+insert into Categoria values (null, 0, 10, 11, 'Masculino', 50, 60);
+
+-- Registrado
+drop trigger if exists graduacion_registrado_va_de_1_a_6;
+DELIMITER $$
+CREATE TRIGGER graduacion_registrado_va_de_1_a_6
+    BEFORE INSERT ON Registrado
+    FOR EACH ROW
+BEGIN
+    if NEW.Graduacion < 1 or NEW.Graduacion > 6
+    then
+        signal sqlstate '45000' set message_text = 'La graduación está fuera del rango válido. Debe ser entre 1ero y 6to dan.';
+    end if;
+END$$
+DELIMITER ;
+
+insert into Maestro values (10, 'Escuela TK', 'Esteban Quito', 4, 'Argentina');
+insert into Registrado values (null, 'La foto', 10, 'Armando Paredes', 10);
+
+-- END La graduación va de 1ero a 6to dan.
+
+
+
+-- Para toda participación:
+
 DELIMITER $$
 CREATE TRIGGER validate_participation BEFORE INSERT ON Participacion FOR EACH ROW
 BEGIN
     IF NEW.Tipo = "Individual" THEN
-        # Si la categoría tiene peso máximo y mínimo el peso del competidor debe estar en el rango
-        # Si la categoría tiene edad máxima y mínima la edad del competidor debe estar en el rango
-        # Si la categoría tiene género el competidor debe ser de ese género
-        # Si la categoría tiene graduación el competidor debe ser de esa graduación
-        # Las participaciones individuales no pueden ser en la modalidad “combate por equipos”.
+        -- Si la categoría tiene peso máximo y mínimo el peso del competidor debe estar en el rango
+        -- Si la categoría tiene edad máxima y mínima la edad del competidor debe estar en el rango
+        -- Si la categoría tiene género el competidor debe ser de ese género
+        -- Si la categoría tiene graduación el competidor debe ser de esa graduación
+        -- Las participaciones individuales no pueden ser en la modalidad “combate por equipos”.
         DECLARE weight_competitor INT;
         DECLARE age_competitor INT;
         DECLARE gender_competitor VARCHAR(45);
@@ -66,11 +141,11 @@ BEGIN
         END IF;
 
     ELSE
-        # Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
-        # Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
-        # Todos los integrantes de un equipo deben ser de la misma escuela
-        # Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de todas sus participaciones de equipo.
-        # Las participaciones de equipo deben ser en la modalidad “combate por equipos”.
+        -- Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
+        -- Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
+        -- Todos los integrantes de un equipo deben ser de la misma escuela
+        -- Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de todas sus participaciones de equipo.
+        -- Las participaciones de equipo deben ser en la modalidad “combate por equipos”.
 
     END IF;
      -- Use NEW and OLD constants for access to row
@@ -80,13 +155,39 @@ END;
 $$
 DELIMITER ;
 
+-- Cada competidor no puede tener más de una participación por modalidad
+drop trigger if exists los_competidores_no_tienen_mas_de_una_participacion_por_modalidad;
+DELIMITER $$
+CREATE TRIGGER los_competidores_no_tienen_mas_de_una_participacion_por_modalidad
+    BEFORE INSERT ON ParticipacionIndividual
+    FOR EACH ROW
+BEGIN
+    declare modalidad_de_la_nueva_participacion varchar(50);
+    declare cantidad_de_repetidos int;
+
+    set modalidad_de_la_nueva_participacion =
+        select p.NombreModalidad
+        from Participacion p
+        where p.IDParticipacion = NEW.IDParticipacion;
+
+    set cantidad_de_repetidos =
+        select count(*)
+        from Participacion p
+        inner join ParticipacionIndividual pi on pi.IDParticipacion = p.IDParticipacion
+        where p.NombreModalidad = modalidad_de_la_nueva_participacion;
+
+    if cantidad_de_repetidos > 0
+    then
+        signal sqlstate '45000' set message_text = 'La graduación está fuera del rango válido. Debe ser entre 1ero y 6to dan.';
+    end if;
+END$$
+DELIMITER ;
 
 
-# Cada competidor puede tener no puede tener más de una participación por modalidad
-# En cada jurado hay:
-# un árbitro con rol “presidente de mesa”
-# un “árbitro central”
-# dos o más “jueces”
-# tres o más “suplentes”.
-# La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado.
-# El coach de una participación debe ser de la misma escuela que el competidor
+-- En cada jurado hay:
+-- un árbitro con rol “presidente de mesa”
+-- un “árbitro central”
+-- dos o más “jueces”
+-- tres o más “suplentes”.
+-- La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado.
+-- El coach de una participación debe ser de la misma escuela que el competidor
