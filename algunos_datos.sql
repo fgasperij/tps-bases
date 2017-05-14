@@ -78,11 +78,11 @@ insert into Registrado values(7, null, 1, "G G", 1);
 insert into Registrado values(8, null, 1, "H H", 1);
 
 -- (NumeroCertificadoGraduacion, Peso, DNI, FechaNacimiento, Sexo, RolEquipo, NombreEquipo)
-insert into Competidor values (1, 60, 12345678, "1994-05-06", "M", null, null);
-insert into Competidor values (2, 70, 12345678, "1994-05-06", "M", null, null);
-insert into Competidor values (3, 80, 12345678, "1994-05-06", "M", null, null);
-insert into Competidor values (4, 90, 12345678, "1994-05-06", "M", null, null);
-insert into Competidor values (5, 60, 12345678, "1994-05-06", "M", null, null);
+insert into Competidor values (1, 60, 12345671, "1994-05-06", "M", null, null);
+insert into Competidor values (2, 70, 12345672, "1994-05-06", "M", null, null);
+insert into Competidor values (3, 80, 12345673, "1994-05-06", "M", null, null);
+insert into Competidor values (4, 90, 12345674, "1994-05-06", "M", null, null);
+insert into Competidor values (5, 60, 12345675, "1994-05-06", "M", null, null);
 
 -- (NumeroCertificadoGraduacion, NombreModalidad)
 insert into Inscripto values (1, "Combate");
