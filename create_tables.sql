@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Competidor` (
   `NumeroCertificadoGraduacion` INT NOT NULL,
   `Peso` INT NULL,
   `DNI` INT NULL,
-  `FechaNacimiento` DATETIME NULL,
+  `FechaNacimiento` DATE NULL,
   `Sexo` VARCHAR(45) NULL,
   `RolEquipo` VARCHAR(45) NULL,
   `NombreEquipo` VARCHAR(200) NULL,
@@ -291,7 +291,7 @@ DROP TABLE IF EXISTS `mundial_taekwondo`.`Participacion` ;
 
 CREATE TABLE IF NOT EXISTS `mundial_taekwondo`.`Participacion` (
   `IDParticipacion` INT NOT NULL AUTO_INCREMENT,
-  `Resultado` VARCHAR(45) NULL,
+  `Resultado` TINYINT(1) NULL,
   `IDCategoria` INT NOT NULL,
   `NombreModalidad` VARCHAR(45) NOT NULL,
   `NumeroCertificadoGraduacionCoach` INT NOT NULL,
