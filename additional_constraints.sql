@@ -155,6 +155,38 @@ END;
 $$
 DELIMITER ;
 
+-- Cada competidor no puede tener más de una participación individual por modalidad
+drop trigger if exists los_competidores_no_tienen_mas_de_una_participacion_individual_por_modalidad;
+DELIMITER $$
+CREATE TRIGGER los_competidores_no_tienen_mas_de_una_participacion_individual_por_modalidad
+    BEFORE INSERT ON ParticipacionIndividual
+    FOR EACH ROW
+BEGIN
+    declare modalidad_de_la_nueva_participacion varchar(45);
+    declare cantidad_de_repetidos int;
+
+    set modalidad_de_la_nueva_participacion =
+        select p.NombreModalidad
+        from Participacion p
+        where p.IDParticipacion = NEW.IDParticipacion;
+
+    set cantidad_de_repetidos =
+        select count(*)
+        from Participacion p
+        inner join ParticipacionIndividual pi on pi.IDParticipacion = p.IDParticipacion
+        where p.NombreModalidad = modalidad_de_la_nueva_participacion;
+
+    if cantidad_de_repetidos > 0
+    then
+        signal sqlstate '45000' set message_text = 'La graduación está fuera del rango válido. Debe ser entre 1ero y 6to dan.';
+    end if;
+END$$
+DELIMITER ;
+
+insert into Participacion values (2, 1);
+-- 2 participaciones individuales con la misma modalidad: Combate.
+insert into ParticipacionIndividual values (1, 1);
+insert into ParticipacionIndividual values (2, 1);
 
 
 -- En cada jurado hay:
