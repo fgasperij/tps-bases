@@ -18,6 +18,20 @@ BEGIN
     DECLARE valid boolean DEFAULT false;
     DECLARE last_id_participation INT;
     DECLARE one_participation_per_modality boolean DEFAULT false;
+    DECLARE competitor_school VARCHAR(45);
+    DECLARE coach_school VARCHAR(45);
+
+    (select m.Escuela into competitor_school
+        from Competidor C
+        inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
+        inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
+        where c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCompetidor);
+
+    (select m.Escuela into coach_school
+        from Coach c
+        inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
+        inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
+        where c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCoach);
 
     IF (select ifnull(count(*), 0) = 0
             from Inscripto i
@@ -48,7 +62,9 @@ BEGIN
                 and c.EdadMaxima >= age_competitor
                 and c.EdadMinima <= age_competitor
                 and NombreModalidad <> "Equipo"
-                and NumeroCertificadoGraduacionCoach in (select NumeroCertificadoGraduacion from Coach);
+                and competitor_school = coach_school
+                and NumeroCertificadoGraduacionCoach in (select c.NumeroCertificadoGraduacion from Coach c
+                                                            where c.NumeroCertificadoGraduacion <> NumeroCertificadoGraduacionCompetidor);
 
     IF (valid = true and one_participation_per_modality = true) then
         INSERT INTO `Participacion`(
@@ -218,11 +234,108 @@ DROP PROCEDURE IF EXISTS `agregar_participacion_equipo`;
 DELIMITER $$
 CREATE PROCEDURE `agregar_participacion_equipo`(
 `NombreEquipo` VARCHAR(200),
+`Resultado` TINYINT(1),
+`IDCategoria` INT,
+`NumeroCertificadoGraduacionCoach` INT
+)
+BEGIN
+    DECLARE coach_school VARCHAR(45);
+    DECLARE team_school VARCHAR(45);
+    DECLARE last_id_participation INT;
 
-) BEGIN
+    IF (select ifnull(count(*), 0) = 0
+        from Equipo e
+        where e.NombreEquipo = NombreEquipo) then
+        signal sqlstate '45000' set message_text = 'Equipo inexistente';
+    END IF;
 
+    IF (select ifnull(count(*), 0) < 8
+            from Competidor c
+            where c.NombreEquipo = NombreEquipo) then
+        signal sqlstate '45000' set message_text = 'Equipo no lleno';
+    END IF;
+
+    IF (select ifnull(count(*), 0) < 3
+            from Competidor c
+            where c.NombreEquipo = NombreEquipo
+            and 'Suplente' = c.RolEquipo) then
+        signal sqlstate '45000' set message_text = 'Faltan suplentes';
+    END IF;
+
+    IF (select ifnull(count(*), 0) < 5
+            from Competidor c
+            where c.NombreEquipo = NombreEquipo
+            and 'Titular' = c.RolEquipo) then
+        signal sqlstate '45000' set message_text = 'Faltan titulares';
+    END IF;
+
+
+    (select m.Escuela into coach_school
+        from Coach c
+        inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
+        inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
+        where c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCoach);
+
+    (select m.Escuela into team_school
+        from Competidor C
+        inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
+        inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
+        where c.NombreEquipo = NombreEquipo
+        group by m.Escuela);
+
+    IF (select ifnull(count(*), 0) > 0
+            from Competidor c
+            where c.NombreEquipo = NombreEquipo
+                and c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCoach) then
+        signal sqlstate '45000' set message_text = 'Coach no puede ser miembro del equipo';
+    END IF;
+
+    IF coach_school <> team_school then
+        signal sqlstate '45000' set message_text = 'Coach no puede ser de otra escuela';
+    END IF;
+
+    IF (select ifnull(count(*), 0) = 0
+        from Categoria cat
+        where cat.Sexo in (select c.Sexo from Competidor C
+                            where c.NombreEquipo = NombreEquipo
+                            group by c.Sexo)) then
+        signal sqlstate '45000' set message_text = 'Sexo equipo distinto del de la categoría';
+    END IF;
+
+
+    IF (select ifnull(count(*), 0) > 0
+        from Participacion p
+        inner join ParticipacionDeEquipo pe on ( p.IDParticipacion = pe.IDParticipacion)
+        where pe.NombreEquipo = NombreEquipo) then
+        signal sqlstate '45000' set message_text = 'Equipo ya tiene participacion';
+    END IF;
+
+    INSERT INTO `Participacion`(
+            `IDParticipacion`,
+            `Resultado`,
+            `IDCategoria`,
+            `NombreModalidad`,
+            `NumeroCertificadoGraduacionCoach`,
+            `Tipo`
+        )
+        VALUES(
+            NULL, -- para crear nuevo id
+            Resultado,
+            IDCategoria,
+            'Combate por Equipos',
+            NumeroCertificadoGraduacionCoach,
+            'Equipo'
+        );
+        select LAST_INSERT_ID() into last_id_participation;
+        INSERT INTO `ParticipacionDeEquipo`(
+            `IDParticipacion`,
+            `NombreEquipo`
+        )
+        VALUES(
+            last_id_participation,
+            NombreEquipo
+        );
 END;
-
 
 $$
 DELIMITER ;
