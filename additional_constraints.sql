@@ -100,7 +100,73 @@ insert into Registrado values (null, 'La foto', 10, 'Armando Paredes', 10);
 
 -- END La graduación va de 1ero a 6to dan.
 
+-- En cada jurado hay:
+-- un árbitro con rol “presidente de mesa”
+-- un “árbitro central”
+-- dos o más “jueces”
+-- tres o más “suplentes”.
+-- La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado.
+DROP TRIGGER IF EXISTS `validate_jury_before_arbiting`;
+DELIMITER $$
+CREATE TRIGGER `validate_jury_before_arbiting` BEFORE INSERT ON `ArbitradoPor` FOR EACH ROW
+BEGIN
+    IF (select cat.Graduacion
+        from Categoria cat
+        where cat.IDCategoria = NEW.IDCategoria) >
+        (select min(a.Graduacion)
+            from Arbitraje ar
+            INNER JOIN Arbitro a ON ( a.PlacaArbitro = ar.PlacaArbitro)
+            where ar.IDJurado = NEW.IDJurado) then
+        signal sqlstate '45000' set message_text = 'La graduación del arbitro es menor que la de la categoría';
+    END IF;
 
+    IF (select ifnull(count(*), 0) = 0 from Arbitraje a
+        where a.IDJurado = NEW.IDJurado
+            and a.Rol = 'Presidente de Mesa') then
+        signal sqlstate '45000' set message_text = 'Falta el Presidente de Mesa';
+    END IF;
+
+    IF (select ifnull(count(*), 0) = 0 from Arbitraje a
+        where a.IDJurado = NEW.IDJurado
+            and a.Rol = 'Arbitro Central') then
+        signal sqlstate '45000' set message_text = 'Falta el Arbitro Central';
+    END IF;
+
+    IF (select ifnull(count(*), 0) < 2 from Arbitraje a
+        where a.IDJurado = NEW.IDJurado
+            and a.Rol = 'Juez') then
+        signal sqlstate '45000' set message_text = 'Faltan jueces';
+    END IF;
+
+    IF (select ifnull(count(*), 0) < 3 from Arbitraje a
+        where a.IDJurado = NEW.IDJurado
+            and a.Rol = 'Suplente') then
+        signal sqlstate '45000' set message_text = 'Faltan suplentes';
+    END IF;
+END;
+$$
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS `check_jury_insertion`;
+DELIMITER $$
+CREATE TRIGGER `check_jury_insertion` BEFORE INSERT ON `Arbitraje` FOR EACH ROW
+BEGIN
+    IF (select ifnull(count(*), 0) > 0 from Arbitraje a
+        where a.IDJurado = NEW.IDJurado
+            and a.Rol = NEW.Rol
+            and NEW.Rol = 'Presidente de Mesa') then
+        signal sqlstate '45000' set message_text = 'Solo puede haber un Presidente de Mesa por jurado';
+    END IF;
+
+    IF (select ifnull(count(*), 0) > 0 from Arbitraje a
+        where a.IDJurado = NEW.IDJurado
+            and a.Rol = NEW.Rol
+            and NEW.Rol = 'Arbitro Central') then
+        signal sqlstate '45000' set message_text = 'Solo puede haber un Arbitro Central por jurado';
+    END IF;
+END;
+$$
+DELIMITER ;
 
 
 
@@ -109,6 +175,5 @@ insert into Registrado values (null, 'La foto', 10, 'Armando Paredes', 10);
 -- un “árbitro central”
 -- dos o más “jueces”
 -- tres o más “suplentes”.
--- La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado.
 -- El coach de una participación debe ser de la misma escuela que el competidor
 -- Los competidores no deben tener Rol ni NombreEquipo ya que se utilizarán SPs específicos para asignárselos.
