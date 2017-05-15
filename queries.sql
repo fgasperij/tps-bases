@@ -21,7 +21,7 @@ order by i.NombreModalidad, cat.IDCategoria;
 -- El país que obtuvo mayor cantidad de medallas de oro, plata y bronce.
 
 create view EquiposMaestro as
-SELECT c.NombreEquipo, min(m.PlacaInstructor) 
+SELECT c.NombreEquipo, min(m.PlacaInstructor)
 FROM Competidor c INNER JOIN m Maestro on m.PlacaInstructor = c.PlacaInstructor
 WHERE c.NombreEquipo is not null
 GROUP BY c.NombreEquipo;
@@ -41,7 +41,7 @@ create view MaestroMedallas as SELECT * FROM
 	FROM ResultadosMaestro
 	WHERE ResultadosMaestro.Resultado = 3
 	GROUP BY ResultadosMaestro.PlacaInstructor) as MaestroBronce
-INNER JOIN 
+INNER JOIN
 (SELECT ResultadosMaestro.PlacaInstructor, count(ResultadosMaestro.Resultado) as plata
 	FROM ResultadosMaestro
 	WHERE ResultadosMaestro.Resultado = 2
@@ -88,16 +88,22 @@ ORDER BY puntaje desc;
 
 -- Dado un Competidor, la lista de categorías donde haya participado y el Resultado obtenido.
 
--- no sé como pasarle un competidor
-
-SELECT p.IDCategoria, p.Resultado
-FROM ParticipacionIndividual pi INNER JOIN Participacion p ON p.IDParticipacion = pi.IDParticipacion
-WHERE pi.NumeroCertificadoGraduacion = @comp
-UNION
-SELECT p.IDCategoria, p.Resultado
-FROM ParticipacionDeEquipo pe INNER JOIN Participacion p ON p.IDParticipacion = pe.IDParticipacion
-	INNER JOIN Competidor c on c.nombreEquipo = pe.nombreEquipo
-WHERE c.id = @comp
+DROP PROCEDURE IF EXISTS `participaciones_competidor`;
+DELIMITER $$
+CREATE PROCEDURE `participaciones_competidor`(
+`NumeroCertificadoGraduacion` INT
+) BEGIN
+    SELECT p.IDCategoria, p.Resultado
+    FROM ParticipacionIndividual pi INNER JOIN Participacion p ON p.IDParticipacion = pi.IDParticipacion
+    WHERE pi.NumeroCertificadoGraduacion = NumeroCertificadoGraduacion
+    UNION
+    SELECT p.IDCategoria, p.Resultado
+    FROM ParticipacionDeEquipo pe INNER JOIN Participacion p ON p.IDParticipacion = pe.IDParticipacion
+        INNER JOIN Competidor c on c.nombreEquipo = pe.nombreEquipo
+    WHERE c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacion;
+END;
+$$
+DELIMITER ;
 
 
 -- El listado de los árbitros por país.
@@ -109,7 +115,7 @@ ORDER BY NombrePais desc;
 -- La lista de todos los árbitros que actuaron como árbitro central en las modalidades de combate
 
 SELECT a.PlacaArbitro
-FROM 
+FROM
     Arbitraje a INNER JOIN ArbitradoPor ap ON a.IDJurado = ap.IDJurado
 WHERE ap.NombreModalidad = 'combate' or ap.NombreModalidad = 'combate por Equipos'
 and a.Rol = 'arbitro central';
