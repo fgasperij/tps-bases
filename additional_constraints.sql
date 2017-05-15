@@ -168,12 +168,23 @@ END;
 $$
 DELIMITER ;
 
-
-
--- En cada jurado hay:
--- un árbitro con rol “presidente de mesa”
--- un “árbitro central”
--- dos o más “jueces”
--- tres o más “suplentes”.
 -- El coach de una participación debe ser de la misma escuela que el competidor
 -- Los competidores no deben tener Rol ni NombreEquipo ya que se utilizarán SPs específicos para asignárselos.
+
+DROP TRIGGER IF EXISTS `validate_competitor_empty_role_team`;
+DELIMITER $$
+CREATE TRIGGER `validate_competitor_empty_role_team` BEFORE INSERT ON `Competidor` FOR EACH ROW
+BEGIN
+    IF (select IF(NombreEquipo is NULL or NombreEquipo = '', false, true) from NEW)
+        then
+            signal sqlstate '45000' set message_text = 'No deberia tener NombreEquipo durante insercion';
+    END IF;
+
+    IF (select IF(RolEquipo is NULL or RolEquipo = '', false, true) from NEW)
+        then
+            signal sqlstate '45000' set message_text = 'No deberia tener RolEquipo durante insercion';
+    END IF;
+END;
+$$
+DELIMITER ;
+
