@@ -1,0 +1,151 @@
+                        
+\documentclass[a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}   % tipografia
+\usepackage{graphicx}
+\usepackage{courier}
+\usepackage{paralist} %itemize inline
+
+\usepackage{amsmath, amsthm, amssymb}
+%\lstset{language=C}
+
+\usepackage{tipa}
+
+\input{codesnippet}
+\input{page.layout}
+\usepackage{underscore}
+\usepackage{caratula}
+\usepackage{url}
+\usepackage{enumitem}
+\newcommand{\tab}{\hspace*{7mm}}
+\newcommand{\ode}[1]{O(${#1}$)}
+\newcommand{\odecod}[1]{\hfill \ode{#1}}
+
+\usepackage{listings}
+\lstset{
+    language=C++,
+    basewidth=0.55em,
+    backgroundcolor=\color[rgb]{0.95,0.95,0.92},
+    morekeywords={time_point,system_clock,duration}
+}
+
+\begin{document}
+
+\thispagestyle{empty}
+\materia{Bases de datos}
+\submateria{Primer Cuatrimestre de 2017}
+\titulo{Trabajo Práctico 1}
+\grupo{Grupo 4}
+\integrante{De Carli, Nicolás}{}{}
+\integrante{Gambaccini, Ezequiel}{}{}
+\integrante{Gásperi, Fernando}{}{}
+\integrante{Minces, Javier}{}{}
+\maketitle
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introducción}
+
+En este trabajo práctico presentaremos el diseño de una base de datos para la inscripción en un mundial de taekwondo. Debemos guardar los datos correspondientes a los competidores, coaches y árbitros, y los resultados obtenidos en cada categoría de cada modalidad.
+
+En primer lugar mostraremos el diagrama entidad-relación, junto con las restricciones y suposiciones expresadas en lenguaje natural. Luego presentaremos el modelo relacional derivado, con el que se hará la base de datos real en MySQL.
+
+\section{Diagrama Entidad Relación}
+
+\includegraphics[height = \textheight]{mundialtaekwondo.png}
+
+\section{Modelo Relacional}
+
+Maestro(PlacaInstructor, Escuela, Nombre Completo, Graduacion, NombrePais)
+
+País(NombrePais)
+
+Árbitro(PlacaArbitro, Graduacion, Nombre Completo, NombrePais)
+
+Arbitraje(IDJurado, PlacaArbitro, Rol)
+
+Jurado(IDJurado)
+
+ArbitradoPor(NombreModalidad, IDCategoria, IDJurado)
+
+Modalidad(NombreModalidad)
+
+Categoría(IDCategoria, Graduacion, EdadMinima, EdadMaxima, Sexo, PesoMinimo, PesoMaximo)
+
+SeDivideEn(IDCategoria, NombreModalidad, Ring)
+
+Registrado(NumeroCertificadoGraduacion, Foto,
+Graduacion, NombreCompleto, PlacaInstructor)
+
+Competidor(NumeroCertificadoGraduacion, Peso, DNI, FechaNacimiento, Genero, RolEquipo, NombreEquipo)
+
+Coach(NumeroCertificadoGraduacion)
+
+InscriptoEn(NumeroCertificadoGraduacion, NombreModalidad)
+
+Equipo(NombreEquipo)
+
+Participación(IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach, Tipo)
+
+ParticipaciónIndividual(IDParticipacion, NumeroCertificadoGraduacionCompetidor)
+ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
+
+\subsection{Restricciones}
+
+La cantidad de coaches de una escuela debe ser 1/5 de la cantidad de alumnos
+
+La graduación va de 1er dan a 6to dan
+
+Para toda participación:
+
+Si la categoría tiene peso máximo y mínimo el peso del competidor debe estar en el rango
+
+Si la categoría tiene edad máxima y mínima la edad del competidor debe estar en el rango
+
+Si la categoría tiene género el competidor debe ser de ese género
+
+Si la categoría tiene graduación el competidor debe ser de esa graduación
+
+Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
+
+Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
+
+Todos los integrantes de un equipo deben ser de la misma escuela
+
+Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de su participación por equipo.
+
+Las participaciones de equipo deben ser en la modalidad “combate por equipos”.
+
+Las participaciones individuales no pueden ser en la modalidad “combate por equipos”.
+
+Cada competidor no puede tener más de una participación por modalidad
+
+En cada jurado hay:
+
+un árbitro con rol “presidente de mesa”
+
+un “árbitro central”
+
+dos o más “jueces”
+
+tres o más “suplentes”.
+
+La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado. 
+
+El coach de una participación debe ser de la misma escuela que el competidor
+
+\section{Supuestos}
+
+\section{Código}
+
+\section{Código Restricciones}
+
+\section{Conclusión}
+
+\newpage
+
+\end{document}
