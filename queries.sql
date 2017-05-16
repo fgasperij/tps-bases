@@ -117,7 +117,7 @@ ORDER BY NombrePais desc;
 SELECT a.PlacaArbitro
 FROM
     Arbitraje a INNER JOIN ArbitradoPor ap ON a.IDJurado = ap.IDJurado
-WHERE ap.NombreModalidad = 'combate' or ap.NombreModalidad = 'combate por Equipos'
+WHERE ap.NombreModalidad = 'Combate' or ap.NombreModalidad = 'Combate por Equipos'
 and a.Rol = 'arbitro central';
 
 -- La lista de equipos por país.

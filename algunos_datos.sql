@@ -1,11 +1,11 @@
 insert into Modalidad values ("Combate");
-insert into Modalidad values ("Combate por equipos");
+insert into Modalidad values ("Combate por Equipos");
 insert into Modalidad values ("Rotura de potencia");
 insert into Modalidad values ("Formas");
 insert into Modalidad values ("Salto");
 
 -- (IDCategoria, Graduacion, EdadMinima, EdadMaxima, Sexo, PesoMinimo, PesoMaximo)
--- Rotura de potencia, Salto y Combate por equipos
+-- Rotura de potencia, Salto y Combate por Equipos
 insert into Categoria values (1, null, 14, 17, "M", null, null);
 insert into Categoria values (2, null, 18, 35, "M", null, null);
 insert into Categoria values (3, null, 14, 17, "F", null, null);
@@ -38,7 +38,7 @@ insert into Categoria
   where Categoria.Graduacion is not null;
 
 -- (IDCategoria, NombreModalidad, Ring)
--- Combate por equipos, Salto y Rotura de potencia
+-- Combate por Equipos, Salto y Rotura de potencia
 insert into SeDivideEn
   select Categoria.IDCategoria, Modalidad.NombreModalidad, floor(rand()*10)+1
   from (
@@ -49,7 +49,7 @@ insert into SeDivideEn
   cross join (
     select NombreModalidad
     from Modalidad
-    where NombreModalidad = "Combate por equipos" or NombreModalidad = "Salto" or NombreModalidad = "Rotura de potencia"
+    where NombreModalidad = "Combate por Equipos" or NombreModalidad = "Salto" or NombreModalidad = "Rotura de potencia"
   ) Modalidad;
 -- Formas
 insert into SeDivideEn

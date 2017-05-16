@@ -43,11 +43,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-insert into Pais value ('Argentina');
-insert into Maestro values (null, 'Escuela TK', 'Esteban Quito', 3, 'Argentina');
-insert into Maestro values (null, 'Escuela TK', 'Esteban Quito', 8, 'Argentina');
-
-
 -- Árbitro
 drop trigger if exists graduacion_arbitro_va_de_1_a_6;
 DELIMITER $$
@@ -62,8 +57,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-insert into Pais value ('Argentina');
-insert into Arbitro values (null, 0, 'Esteban Quito', 'Argentina');
 
 -- Categoría
 drop trigger if exists graduacion_categoria_va_de_1_a_6;
@@ -79,7 +72,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-insert into Categoria values (null, 0, 10, 11, 'Masculino', 50, 60);
 
 -- Registrado
 drop trigger if exists graduacion_registrado_va_de_1_a_6;
@@ -94,10 +86,6 @@ BEGIN
     end if;
 END$$
 DELIMITER ;
-
-insert into Maestro values (10, 'Escuela TK', 'Esteban Quito', 4, 'Argentina');
-insert into Registrado values (null, 'La foto', 10, 'Armando Paredes', 10);
-
 -- END La graduación va de 1ero a 6to dan.
 
 -- En cada jurado hay:
@@ -187,4 +175,16 @@ BEGIN
 END;
 $$
 DELIMITER ;
+
+
+
+insert into Categoria values (null, 0, 10, 11, 'Masculino', 50, 60);
+insert into Pais value ('Argentina');
+insert into Arbitro values (null, 0, 'Esteban Quito', 'Argentina');
+
+insert into Maestro values (null, 'Escuela TK', 'Esteban Quito', 3, 'Argentina');
+insert into Maestro values (null, 'Escuela TK', 'Esteban Quito', 8, 'Argentina');
+
+insert into Maestro values (10, 'Escuela TK', 'Esteban Quito', 4, 'Argentina');
+insert into Registrado values (null, 'La foto', 10, 'Armando Paredes', 10);
 

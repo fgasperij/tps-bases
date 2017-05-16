@@ -187,7 +187,7 @@ BEGIN
             signal sqlstate '45000' set message_text = 'Ya tiene rol';
     END IF;
 
--- Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
+-- Todos los integrantes de un equipo deben estar inscriptos en la modalidad Combate por Equipos
    IF (select ifnull(count(*), 0) = 0
             from Inscripto i
             where i.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCompetidor
@@ -223,11 +223,11 @@ END;
 $$
 DELIMITER ;
 
--- Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
+-- Todos los integrantes de un equipo deben estar inscriptos en la modalidad Combate por Equipos
 -- Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
 -- Todos los integrantes de un equipo deben ser de la misma escuela
 -- Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de todas sus participaciones de equipo.
--- Las participaciones de equipo deben ser en la modalidad “combate por equipos”.
+-- Las participaciones de equipo deben ser en la modalidad “Combate por Equipos”.
 
 DROP PROCEDURE IF EXISTS `agregar_participacion_equipo`;
 DELIMITER $$
