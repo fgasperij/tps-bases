@@ -19,8 +19,6 @@
 \usepackage{url}
 \usepackage{enumitem}
 \newcommand{\tab}{\hspace*{7mm}}
-\newcommand{\ode}[1]{O(${#1}$)}
-\newcommand{\odecod}[1]{\hfill \ode{#1}}
 
 \usepackage{listings}
 \lstset{
@@ -37,10 +35,10 @@
 \submateria{Primer Cuatrimestre de 2017}
 \titulo{Trabajo Práctico 1}
 \grupo{Grupo 4}
-\integrante{De Carli, Nicolás}{}{}
-\integrante{Gambaccini, Ezequiel}{}{}
-\integrante{Gásperi, Fernando}{}{}
-\integrante{Minces, Javier}{}{}
+\integrante{De Carli, Nicolás}{715/13}{nikodecarli@gmail.com}
+\integrante{Gásperi, Fernando}{56/09}{fgasperijabalera@gmail.com}
+\integrante{Gambaccini, Ezequiel}{164/13}{ezequiel.gambaccini@gmail.com}
+\integrante{Minces, Javier}{231/13}{javier.minces@gmail.com}
 \maketitle
 \newpage
 
@@ -96,53 +94,69 @@ ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
 
 \subsection{Restricciones}
 
-La cantidad de coaches de una escuela debe ser 1/5 de la cantidad de alumnos
+\begin{itemize}
 
-La graduación va de 1er dan a 6to dan
+\item La cantidad de coaches de una escuela debe ser 1/5 de la cantidad de alumnos
 
-Para toda participación:
+\item La graduación va de 1er dan a 6to dan
 
-Si la categoría tiene peso máximo y mínimo el peso del competidor debe estar en el rango
+\item Para toda participación:
 
-Si la categoría tiene edad máxima y mínima la edad del competidor debe estar en el rango
+\item Si la categoría tiene peso máximo y mínimo el peso del competidor debe estar en el rango
 
-Si la categoría tiene género el competidor debe ser de ese género
+\item Si la categoría tiene edad máxima y mínima la edad del competidor debe estar en el rango
 
-Si la categoría tiene graduación el competidor debe ser de esa graduación
+\item Si la categoría tiene género el competidor debe ser de ese género
 
-Todos los integrantes de un equipo deben estar inscriptos en la modalidad Combate por Equipos
+\item Si la categoría tiene graduación el competidor debe ser de esa graduación
 
-Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
+\item Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
 
-Todos los integrantes de un equipo deben ser de la misma escuela
+\item Los equipos deben tener 5 integrantes cuyo rol sea “titular” y 3 cuyo rol sea “suplente”
 
-Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de su participación por equipo.
+\item Todos los integrantes de un equipo deben ser de la misma escuela
 
-Las participaciones de equipo deben ser en la modalidad “Combate por Equipos”.
+\item Todos los integrantes de un equipo deben ser del mismo género, que debe corresponder con el género de la categoría de su participación por equipo.
 
-Las participaciones individuales no pueden ser en la modalidad “Combate por Equipos”.
+\item Las participaciones de equipo deben ser en la modalidad “combate por equipos”.
 
-Cada competidor no puede tener más de una participación por modalidad
+\item Las participaciones individuales no pueden ser en la modalidad “combate por equipos”.
 
-En cada jurado hay:
+\item Cada competidor no puede tener más de una participación por modalidad
 
-un árbitro con rol “presidente de mesa”
+\item En cada jurado hay:
 
-un “árbitro central”
+\item un árbitro con rol “presidente de mesa”
 
-dos o más “jueces”
+\item un “árbitro central”
 
-tres o más “suplentes”.
+\item dos o más “jueces”
 
-La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado. 
+\item tres o más “suplentes”.
 
-El coach de una participación debe ser de la misma escuela que el competidor
+\item La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado. 
 
-\section{Supuestos}
+\item El coach de una participación debe ser de la misma escuela que el competidor
+
+\end{itemize}
 
 \section{Código}
 
-\section{Código Restricciones}
+\subsection{Creación de tablas}
+
+\lstinputlisting[language=sql, breaklines = true]{createtables.sql}
+
+\subsection{Restricciones - triggers}
+
+\lstinputlisting[language=sql, breaklines = true]{additionalconstraints.tex}
+
+\subsection{Restricciones - stored procedure}
+
+\lstinputlisting[language=sql, breaklines = true]{storeprocedureinsert.sql}
+
+\subsection{Queries}
+
+\lstinputlisting[language=sql, breaklines = true]{queries.sql}
 
 \section{Conclusión}
 
