@@ -1,6 +1,7 @@
 -- Restricciones
 
 -- La cantidad de coaches de una escuela debe ser ⅕ de la cantidad de alumnos
+drop trigger if exists proporcion_coachs_alumnos;
 DELIMITER $$
 CREATE TRIGGER proporcion_coachs_alumnos
     BEFORE INSERT ON Competidor
@@ -23,7 +24,8 @@ BEGIN
                    where r.PlacaInstructor = placa_instructor_del_nuevo_competidor);
 	if competidores > coaches * 5
     then
-
+        signal sqlstate '45000' set message_text = 'No se cumple proporcion 20% coaches';
+    end if;
 END$$
 DELIMITER ;
 
