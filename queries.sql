@@ -1,7 +1,6 @@
 -- El listado de inscriptos en cada categoría para el armado de llaves
--- ¿Es necesario devolver los equipos también?
--- TODO: agregar una query separada para los equipos o un group by a esta.
-SELECT Competidor.NumeroCertificadoGraduacion, Inscripto.NombreModalidad, Categoria.IDCategoria
+
+SELECT comp.NumeroCertificadoGraduacion, i.NombreModalidad, cat.IDCategoria
 FROM Inscripto i
 INNER JOIN SeDivideEn sde on sde.NombreModalidad = i.NombreModalidad
 INNER JOIN Categoria cat on cat.IDCategoria = sde.IDCategoria
@@ -15,8 +14,23 @@ WHERE
       or ((FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) >= cat.EdadMinima and FLOOR(DATEDIFF(DAY, comp.FechaNacimiento, GETDATE()) / 365.25) < cat.EdadMaxima)))
   and comp.Sexo = cat.Sexo
   and (cat.Graduacion is null or comp.Graduacion = cat.Graduacion)
+  and i.NombreModalidad != 'Combate por Equipos'
 order by i.NombreModalidad, cat.IDCategoria;
 
+-- Equipos por categoria
+
+SELECT comp.NombreEquipo, min(Inscripto.NombreModalidad), min(Categoria.IDCategoria)
+FROM Inscripto i
+INNER JOIN SeDivideEn sde on sde.NombreModalidad = i.NombreModalidad
+INNER JOIN Categoria cat on cat.IDCategoria = sde.IDCategoria
+INNER JOIN Competidor comp on comp.NumeroCertificadoGraduacion = i.NumeroCertificadoGraduacion
+WHERE
+  and comp.Sexo = cat.Sexo
+  and (cat.Graduacion is null or comp.Graduacion = cat.Graduacion)
+  and comp.NombreEquipo is not null
+  and i.NombreModalidad != 'Combate por Equipos'
+group by comp.NombreEquipo
+order by cat.IDCategoria;
 
 -- El país que obtuvo mayor cantidad de medallas de oro, plata y bronce.
 
@@ -33,7 +47,7 @@ create view ResultadosMaestro as
 	union
 	SELECT p.Resultado, m.PlacaInstructor
 	FROM ((Participacion p INNER JOIN ParticipacionIndivIDual i on p.IDParticipacion = i.IDParticipacion)
-		INNER JOIN Competidor c on i.NumeroCertificadoGraduacion = c.NumeroCertificadoGraduacion)
+		INNER JOIN Competidor c on i.NumeroCertificadoGraduacionCompetidor = c.NumeroCertificadoGraduacion)
 		INNER JOIN Maestro m on c.PlacaInstructor = m.PlacaInstructor;
 
 create view MaestroMedallas as SELECT * FROM
@@ -95,12 +109,12 @@ CREATE PROCEDURE `participaciones_competidor`(
 ) BEGIN
     SELECT p.IDCategoria, p.Resultado
     FROM ParticipacionIndividual pi INNER JOIN Participacion p ON p.IDParticipacion = pi.IDParticipacion
-    WHERE pi.NumeroCertificadoGraduacion = NumeroCertificadoGraduacion
+    WHERE pi.NumeroCertificadoGraduacionComptidor = NumeroCertificadoGraduacion
     UNION
     SELECT p.IDCategoria, p.Resultado
     FROM ParticipacionDeEquipo pe INNER JOIN Participacion p ON p.IDParticipacion = pe.IDParticipacion
         INNER JOIN Competidor c on c.nombreEquipo = pe.nombreEquipo
-    WHERE c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacion;
+    WHERE c.NumeroCertificadoGraduacionCompetidor = NumeroCertificadoGraduacion;
 END;
 $$
 DELIMITER ;

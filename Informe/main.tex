@@ -18,15 +18,29 @@
 \usepackage{caratula}
 \usepackage{url}
 \usepackage{enumitem}
+
+\usepackage{tikz}
+
+\newcommand{\FK}[1]{%
+    \tikz[baseline=(todotted.base)]{
+        \node[inner sep=1pt,outer sep=0pt] (todotted) {\strut #1};
+        \draw[dashed] ([yshift=3pt]todotted.south west) -- ([yshift=3pt]todotted.south east);
+    }%
+}%
+
+\newcommand{\FKPK}[1]{%
+    \tikz[baseline=(todotted.base)]{
+        \node[inner sep=1pt,outer sep=0pt] (todotted) {\strut #1};
+        \draw[solid] ([yshift=3pt]todotted.south west) -- ([yshift=3pt]todotted.south east);
+        \draw[dashed] ([yshift=2pt]todotted.south west) -- ([yshift=2pt]todotted.south east);
+    }%
+}%
+
+
 \newcommand{\tab}{\hspace*{7mm}}
+\def\doubleunderline#1{\underline{\underline{#1}}}
 
 \usepackage{listings}
-\lstset{
-    language=C++,
-    basewidth=0.55em,
-    backgroundcolor=\color[rgb]{0.95,0.95,0.92},
-    morekeywords={time_point,system_clock,duration}
-}
 
 \begin{document}
 
@@ -35,9 +49,9 @@
 \submateria{Primer Cuatrimestre de 2017}
 \titulo{Trabajo Práctico 1}
 \grupo{Grupo 4}
-\integrante{De Carli, Nicolás}{715/13}{nikodecarli@gmail.com}
+\integrante{De Carli, Nicolás}{164/13}{nikodecarli@gmail.com}
 \integrante{Gásperi, Fernando}{56/09}{fgasperijabalera@gmail.com}
-\integrante{Gambaccini, Ezequiel}{164/13}{ezequiel.gambaccini@gmail.com}
+\integrante{Gambaccini, Ezequiel}{715/13}{ezequiel.gambaccini@gmail.com}
 \integrante{Minces, Javier}{231/13}{javier.minces@gmail.com}
 \maketitle
 \newpage
@@ -58,39 +72,44 @@ En primer lugar mostraremos el diagrama entidad-relación, junto con las restric
 
 \section{Modelo Relacional}
 
-Maestro(PlacaInstructor, Escuela, Nombre Completo, Graduacion, NombrePais)
+Maestro(\underline{PlacaInstructor}, Escuela, Nombre Completo, Graduacion, \FK{NombrePais})
 
-País(NombrePais)
+País(\underline{NombrePais})
 
-Árbitro(PlacaArbitro, Graduacion, Nombre Completo, NombrePais)
+Árbitro(\underline{PlacaArbitro}, Graduacion, Nombre Completo, \FK{NombrePais})
 
-Arbitraje(IDJurado, PlacaArbitro, Rol)
+Arbitraje(\FKPK{IDJurado}, \FKPK{PlacaArbitro}, Rol)
 
-Jurado(IDJurado)
+Jurado(\underline{IDJurado})
 
-ArbitradoPor(NombreModalidad, IDCategoria, IDJurado)
+ArbitradoPor(\FKPK{NombreModalidad}, \FKPK{IDCategoria}, \FK{IDJurado})
 
-Modalidad(NombreModalidad)
+Modalidad(\underline{NombreModalidad})
 
-Categoría(IDCategoria, Graduacion, EdadMinima, EdadMaxima, Sexo, PesoMinimo, PesoMaximo)
+Categoría(\underline{IDCategoria}, Graduacion, EdadMinima, EdadMaxima, Sexo, PesoMinimo, PesoMaximo)
 
-SeDivideEn(IDCategoria, NombreModalidad, Ring)
+SeDivideEn(\FKPK{IDCategoria}, \FKPK{NombreModalidad}, Ring)
 
-Registrado(NumeroCertificadoGraduacion, Foto,
-Graduacion, NombreCompleto, PlacaInstructor)
+Registrado(\underline{NumeroCertificadoGraduacion}, Foto,
+Graduacion, NombreCompleto, \FK{PlacaInstructor})
 
-Competidor(NumeroCertificadoGraduacion, Peso, DNI, FechaNacimiento, Genero, RolEquipo, NombreEquipo)
+Competidor(\FKPK{NumeroCertificadoGraduacion}, Peso, DNI, FechaNacimiento, Genero, RolEquipo, \FK{NombreEquipo})
 
-Coach(NumeroCertificadoGraduacion)
+Coach(\FKPK{NumeroCertificadoGraduacion})
 
-InscriptoEn(NumeroCertificadoGraduacion, NombreModalidad)
+InscriptoEn(\FKPK{NumeroCertificadoGraduacion}, \FKPK{NombreModalidad})
 
-Equipo(NombreEquipo)
+Equipo(\underline{NombreEquipo})
 
-Participación(IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach, Tipo)
+Participación(\underline{IDParticipacion}, Resultado, \FK{IDCategoria}, \FK{NombreModalidad}, \FK{NumeroCertificadoGraduacionCoach}, Tipo)
 
-ParticipaciónIndividual(IDParticipacion, NumeroCertificadoGraduacionCompetidor)
-ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
+\tab *NumeroCertificadoGraduacionCoach es PK de Coach
+
+ParticipaciónIndividual(\underline{IDParticipacion}, \FK{NumeroCertificadoGraduacionCompetidor})
+
+\tab *NumeroCertificadoGraduacionCompetidor es PK de Competidor
+
+ParticipaciónDeEquipo(\underline{IDParticipacion}, \FK{NombreEquipo})
 
 \subsection{Restricciones}
 
@@ -102,6 +121,8 @@ ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
 
 \item Para toda participación:
 
+\begin{itemize}
+
 \item Si la categoría tiene peso máximo y mínimo el peso del competidor debe estar en el rango
 
 \item Si la categoría tiene edad máxima y mínima la edad del competidor debe estar en el rango
@@ -109,6 +130,8 @@ ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
 \item Si la categoría tiene género el competidor debe ser de ese género
 
 \item Si la categoría tiene graduación el competidor debe ser de esa graduación
+
+\end{itemize}
 
 \item Todos los integrantes de un equipo deben estar inscriptos en la modalidad combate por equipos
 
@@ -126,6 +149,8 @@ ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
 
 \item En cada jurado hay:
 
+\begin{itemize}
+
 \item un árbitro con rol “presidente de mesa”
 
 \item un “árbitro central”
@@ -133,6 +158,8 @@ ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
 \item dos o más “jueces”
 
 \item tres o más “suplentes”.
+
+\end{itemize}
 
 \item La graduación de cada árbitro debe ser superior a la graduación de las categorías en las que es jurado. 
 
@@ -159,6 +186,12 @@ ParticipaciónDeEquipo(IDParticipacion, NombreEquipo)
 \lstinputlisting[language=sql, breaklines = true]{queries.sql}
 
 \section{Conclusión}
+
+Para resolver este trabajo práctico comenzamos planteando el DER. Fuimos iterando distintas versiones hasta encontrar una versión que nos permitiera resolver todas las queries.
+
+Una vez fijado el DER, y el modelo relacional asociado, evitamos modificarlo, ya que cualquier cambio iba a impactar en gran parte del código escrito. Es por esto que le dedicamos tiempo suficiente al DER hasta estar seguros de que la cantidad de modificaciones iba a ser mínima. La mayoría de las restricciones surgen en este punto.
+
+Crear las tablas a partir del modelo relacional es una correspondencia lineal. Al agregar datos a las tablas surgen nuevas restricciones. Con los datos se pueden implementar y testear las queries.
 
 \newpage
 
