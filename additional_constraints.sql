@@ -165,12 +165,12 @@ DROP TRIGGER IF EXISTS `validate_competitor_empty_role_team`;
 DELIMITER $$
 CREATE TRIGGER `validate_competitor_empty_role_team` BEFORE INSERT ON `Competidor` FOR EACH ROW
 BEGIN
-    IF (select IF(NombreEquipo is NULL or NombreEquipo = '', false, true) from NEW)
+    IF (select IF(NEW.NombreEquipo is NULL or NEW.NombreEquipo = '', false, true))
         then
             signal sqlstate '45000' set message_text = 'No deberia tener NombreEquipo durante insercion';
     END IF;
 
-    IF (select IF(RolEquipo is NULL or RolEquipo = '', false, true) from NEW)
+    IF (select IF(NEW.RolEquipo is NULL or NEW.RolEquipo = '', false, true))
         then
             signal sqlstate '45000' set message_text = 'No deberia tener RolEquipo durante insercion';
     END IF;

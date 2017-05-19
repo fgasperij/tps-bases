@@ -71,12 +71,14 @@ insert into Maestro values(1, "Escuela 1", "Maestro 1", 1, "Sealand");
 insert into Maestro values(2, "Escuela 2", "Maestro 2", 1, "Abjasia");
 
 -- (NumeroCertificadoGraduacion, Foto, Graduacion, NombreCompleto, PlacaInstructor)
+update Registrado set Graduacion = 1 where Graduacion != 1;
+
 insert into Registrado values(1, null, 1, "A A", 1);
-insert into Registrado values(2, null, 2, "B B", 2);
-insert into Registrado values(3, null, 3, "C C", 1);
-insert into Registrado values(4, null, 4, "D D", 2);
-insert into Registrado values(5, null, 5, "E E", 1);
-insert into Registrado values(6, null, 6, "F F", 2);
+insert into Registrado values(2, null, 1, "B B", 2);
+insert into Registrado values(3, null, 1, "C C", 1);
+insert into Registrado values(4, null, 1, "D D", 2);
+insert into Registrado values(5, null, 1, "E E", 1);
+insert into Registrado values(6, null, 1, "F F", 2);
 insert into Registrado values(7, null, 1, "G G", 1);
 insert into Registrado values(8, null, 1, "H H", 2);
 
@@ -99,15 +101,12 @@ insert into Inscripto values (4, "Formas");
 -- (NumeroCertificadoGraduacion)
 insert into Coach values (8);
 
--- (IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach)
-insert into Participacion values(1, 1, 7, "Formas", 8, "Individual");
-insert into Participacion values(2, 2, 7, "Formas", 8, "Individual");
-insert into Participacion values(3, 3, 7, "Formas", 8, "Individual");
+select * from Categoria;
 
--- (IDParticipacion, NumeroCertificadoGraduacion)
-insert into ParticipacionIndividual values(1, 1);
-insert into ParticipacionIndividual values(2, 2);
-insert into ParticipacionIndividual values(3, 3);
+-- (IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach)
+call agregar_participacion_individual(1, 8, "Formas", 6, 1);
+call agregar_participacion_individual(2, 8, "Formas", 6, 2);
+call agregar_participacion_individual(3, 8, "Formas", 6, 3);
 
 -- Fin test medallero individual
 
@@ -118,7 +117,7 @@ insert into Arbitro values(3, 6, "Arbitro 3", "Imperio Romano");
 insert into Arbitro values(4, 6, "Arbitro 4", "Imperio Romano");
 insert into Arbitro values(5, 6, "Arbitro 5", "Imperio Romano");
 insert into Arbitro values(6, 6, "Arbitro 6", "Imperio Romano");
-insert into Arbitro values(7, 6, "Arbitro 7", "Imperio Romano");
+insert into Arbitro values(7, 6, "Arbitro 7", "Sealand");
 
 insert into Jurado values(1);
 
@@ -149,14 +148,14 @@ insert into Registrado values(15, null, 5, "Quince", 2);
 insert into Registrado values(16, null, 5, "Dieciseis", 2);
 
 -- (NumeroCertificadoGraduacion, Peso, DNI, FechaNacimiento, Sexo, RolEquipo, NombreEquipo)
-insert into Competidor values (9, 60, 12345691, "1995-05-06", "F", "Titular", "Los mas mejores");
-insert into Competidor values (10, 70, 12345692, "1995-05-06", "F", "Titular", "Los mas mejores");
-insert into Competidor values (11, 80, 12345693, "1995-05-06", "F", "Titular", "Los mas mejores");
-insert into Competidor values (12, 90, 12345694, "1995-05-06", "F", "Titular", "Los mas mejores");
-insert into Competidor values (13, 60, 12345695, "1995-05-06", "F", "Titular", "Los mas mejores");
-insert into Competidor values (14, 60, 12345696, "1995-05-06", "F", "Suplente", "Los mas mejores");
-insert into Competidor values (15, 60, 12345697, "1995-05-06", "F", "Suplente", "Los mas mejores");
-insert into Competidor values (16, 60, 12345608, "1995-05-06", "F", "Suplente", "Los mas mejores");
+insert into Competidor values (9, 60, 12345691, "1995-05-06", "F", null, null);
+insert into Competidor values (10, 70, 12345692, "1995-05-06", "F", null, null);
+insert into Competidor values (11, 80, 12345693, "1995-05-06", "F", null, null);
+insert into Competidor values (12, 90, 12345694, "1995-05-06", "F", null, null);
+insert into Competidor values (13, 60, 12345695, "1995-05-06", "F", null, null);
+insert into Competidor values (14, 60, 12345696, "1995-05-06", "F", null, null);
+insert into Competidor values (15, 60, 12345697, "1995-05-06", "F", null, null);
+insert into Competidor values (16, 60, 12345608, "1995-05-06", "F", null, null);
 
 insert into Inscripto values (9, "Combate por Equipos");
 insert into Inscripto values (10, "Combate por Equipos");
@@ -167,7 +166,16 @@ insert into Inscripto values (14, "Combate por Equipos");
 insert into Inscripto values (15, "Combate por Equipos");
 insert into Inscripto values (16, "Combate por Equipos");
 
--- (IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach)
-insert into Participacion values(4, 1, 8, "Combate por Equipos", 8, "ParticipacionDeEquipo");
+call add_to_team(9, "Titular", "Los mas mejores");
+call add_to_team(10, "Titular", "Los mas mejores");
+call add_to_team(11, "Titular", "Los mas mejores");
+call add_to_team(12, "Titular", "Los mas mejores");
+call add_to_team(13, "Titular", "Los mas mejores");
+call add_to_team(14, "Suplente", "Los mas mejores");
+call add_to_team(15, "Suplente", "Los mas mejores");
+call add_to_team(16, "Suplente", "Los mas mejores");
 
-insert into ParticipacionDeEquipo values(4, "Los mas mejores");
+select * from Competidor where NombreEquipo = "Los mas mejores";
+
+select * from SeDivideEn where NombreModalidad = "Combate por equipos";
+call agregar_participacion_equipo("Los mas mejores", 1, 1, 8);

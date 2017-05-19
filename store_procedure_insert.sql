@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS `agregar_participacion_individual`;
 
 DELIMITER $$
 CREATE PROCEDURE `agregar_participacion_individual`(
-`Resultado` VARCHAR(45),
+`Resultado` TINYINT(1),
 `NumeroCertificadoGraduacionCoach` INT,
 `NombreModalidad` VARCHAR(45),
 `IDCategoria` INT,
@@ -22,7 +22,7 @@ BEGIN
     DECLARE coach_school VARCHAR(45);
 
     (select m.Escuela into competitor_school
-        from Competidor C
+        from Competidor c
         inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
         inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
         where c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCompetidor);
@@ -57,10 +57,10 @@ BEGIN
             where IDCategoria = c.IDCategoria
                 and c.Graduacion = graduation_competitor
                 and c.Sexo = gender_competitor
-                and c.PesoMaximo >= weight_competitor
-                and c.PesoMinimo <= weight_competitor
-                and c.EdadMaxima >= age_competitor
-                and c.EdadMinima <= age_competitor
+                and (c.PesoMaximo >= weight_competitor or c.PesoMaximo is null)
+                and (c.PesoMinimo <= weight_competitor or c.PesoMinimo is null)
+                and (c.EdadMaxima >= age_competitor or c.EdadMaxima is null)
+                and (c.EdadMinima <= age_competitor or c.EdadMinima is null)
                 and NombreModalidad <> "Equipo"
                 and competitor_school = coach_school
                 and NumeroCertificadoGraduacionCoach in (select c.NumeroCertificadoGraduacion from Coach c
@@ -162,7 +162,7 @@ BEGIN
                             where co.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCompetidor);
 
     ELSE
-        set gender_team = (select c.Sexo from Competidor C
+        set gender_team = (select c.Sexo from Competidor c
                             where c.NombreEquipo = NombreEquipo
                             group by c.Sexo);
     END IF;
@@ -198,14 +198,14 @@ BEGIN
 -- Todos los integrantes de un equipo deben ser de la misma escuela
 
     (select ifnull(m.Escuela, '') into team_school
-            from Competidor C
+            from Competidor c
             inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
             inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
             where c.NombreEquipo = NombreEquipo
             group by m.Escuela);
 
     (select m.Escuela into competitor_school
-        from Competidor C
+        from Competidor c
         inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
         inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
         where c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCompetidor);
@@ -216,9 +216,9 @@ BEGIN
 
 
     UPDATE `Competidor` SET
-      `Competidor.NombreEquipo` = NombreEquipo,
-      `Competidor.RolEquipo` = RolEquipo
-    WHERE `Competidor.NumeroCertificadoGraduacion` = NumeroCertificadoGraduacionCompetidor;
+      Competidor.NombreEquipo = NombreEquipo,
+      Competidor.RolEquipo = RolEquipo
+    WHERE Competidor.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCompetidor;
 END;
 $$
 DELIMITER ;
@@ -276,7 +276,7 @@ BEGIN
         where c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacionCoach);
 
     (select m.Escuela into team_school
-        from Competidor C
+        from Competidor c
         inner join Registrado r on c.NumeroCertificadoGraduacion = r.NumeroCertificadoGraduacion
         inner join Maestro m on r.PlacaInstructor = m.PlacaInstructor
         where c.NombreEquipo = NombreEquipo
@@ -295,7 +295,7 @@ BEGIN
 
     IF (select ifnull(count(*), 0) = 0
         from Categoria cat
-        where cat.Sexo in (select c.Sexo from Competidor C
+        where cat.Sexo in (select c.Sexo from Competidor c
                             where c.NombreEquipo = NombreEquipo
                             group by c.Sexo)) then
         signal sqlstate '45000' set message_text = 'Sexo equipo distinto del de la categoría';

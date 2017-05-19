@@ -20,7 +20,7 @@ order by i.NombreModalidad, cat.IDCategoria;
 
 -- Equipos por categoria
 
-SELECT comp.NombreEquipo, min(Inscripto.NombreModalidad), min(Categoria.IDCategoria)
+SELECT comp.NombreEquipo, i.NombreModalidad, cat.IDCategoria
 FROM Inscripto i
 INNER JOIN SeDivideEn sde on sde.NombreModalidad = i.NombreModalidad
 INNER JOIN Categoria cat on cat.IDCategoria = sde.IDCategoria
@@ -59,12 +59,15 @@ SELECT ResultadosMaestro.PlacaInstructor,
 	sum(CASE WHEN ResultadosMaestro.Resultado = 3 THEN 1 ELSE 0 END) as bronce,
 	sum(CASE WHEN ResultadosMaestro.Resultado = 2 THEN 1 ELSE 0 END) as plata,
 	sum(CASE WHEN ResultadosMaestro.Resultado = 1 THEN 1 ELSE 0 END) as oro
-	FROM ResultadosMaestro;
+	FROM ResultadosMaestro
+group by ResultadosMaestro.PlacaInstructor;
 
 create or replace view paisMedallas as
-SELECT m.NombrePais, sum(MaestroMedallas.bronce) as bronce, sum(MaestroMedallas.plata) as plata, sum(MaestroMedallas.oro) as oro
+SELECT Maestro.NombrePais, sum(MaestroMedallas.bronce) as bronce, sum(MaestroMedallas.plata) as plata, sum(MaestroMedallas.oro) as oro
 FROM MaestroMedallas INNER JOIN Maestro on MaestroMedallas.PlacaInstructor = Maestro.PlacaInstructor
 	GROUP BY Maestro.NombrePais;
+
+
 
 SELECT * FROM paisMedallas
 	where oro = (select max(oro) from paisMedallas)
@@ -113,6 +116,8 @@ END;
 $$
 DELIMITER ;
 
+call participaciones_compatidor(1);
+call participaciones_compatidor(9);
 
 -- El listado de los árbitros por país.
 
