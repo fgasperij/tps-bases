@@ -63,6 +63,8 @@ insert into SeDivideEn
   where Categoria.Graduacion is not null and Categoria.PesoMinimo is not null and Categoria.PesoMaximo is not null;
 
 insert into Pais values("Sealand");
+insert into Pais values("Abjasia");
+insert into Pais values("Imperio Romano");
 
 -- (PlacaInstructor, Escuela, NombreCompleto, Graduacion, NombrePais)
 insert into Maestro values(1, "Escuela 1", "Maestro 1", 1, "Sealand");
@@ -166,6 +168,6 @@ insert into Inscripto values (15, "Combate por Equipos");
 insert into Inscripto values (16, "Combate por Equipos");
 
 -- (IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach)
-insert into Participacion values(4, 1, 8, "Combate por Equipos", "ParticipacionDeEquipo");
+insert into Participacion values(4, 1, 8, "Combate por Equipos", 8, "ParticipacionDeEquipo");
 
 insert into ParticipacionDeEquipo values(4, "Los mas mejores");
