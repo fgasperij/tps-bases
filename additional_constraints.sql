@@ -110,13 +110,13 @@ BEGIN
         signal sqlstate '45000' set message_text = 'La graduación del arbitro es menor que la de la categoría';
     END IF;
 
-    IF (select ifnull(count(*), 0) = 0 from Arbitraje a
+    IF (select ifnull(count(*), 0) != 1 from Arbitraje a
         where a.IDJurado = NEW.IDJurado
             and a.Rol = 'Presidente de Mesa') then
         signal sqlstate '45000' set message_text = 'Falta el Presidente de Mesa';
     END IF;
 
-    IF (select ifnull(count(*), 0) = 0 from Arbitraje a
+    IF (select ifnull(count(*), 0) != 1 from Arbitraje a
         where a.IDJurado = NEW.IDJurado
             and a.Rol = 'Arbitro Central') then
         signal sqlstate '45000' set message_text = 'Falta el Arbitro Central';

@@ -81,7 +81,7 @@ SELECT Maestro.Escuela, sum(MaestroMedallas.bronce) as bronce, sum(MaestroMedall
 FROM MaestroMedallas INNER JOIN Maestro on MaestroMedallas.PlacaInstructor = Maestro.PlacaInstructor
 	GROUP BY Maestro.Escuela;
 
-select * from EscuelaMedallas
+select * from EscuelaMedallas;
 
 -- Sabiendo que las medallas de oro suman 3 puntos, las de plata 2 y las de bronce 1
 -- punto, se quiere realizar un ranking de puntaje por país y otro por Escuela.
@@ -107,8 +107,8 @@ CREATE PROCEDURE `participaciones_competidor`(
     UNION
     SELECT p.IDCategoria, p.Resultado
     FROM ParticipacionDeEquipo pe INNER JOIN Participacion p ON p.IDParticipacion = pe.IDParticipacion
-        INNER JOIN Competidor c on c.nombreEquipo = pe.nombreEquipo
-    WHERE c.NumeroCertificadoGraduacionCompetidor = NumeroCertificadoGraduacion;
+        INNER JOIN Competidor c on c.NombreEquipo = pe.NombreEquipo
+    WHERE c.NumeroCertificadoGraduacion = NumeroCertificadoGraduacion;
 END;
 $$
 DELIMITER ;
