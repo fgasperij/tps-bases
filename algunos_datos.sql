@@ -71,8 +71,6 @@ insert into Maestro values(1, "Escuela 1", "Maestro 1", 1, "Sealand");
 insert into Maestro values(2, "Escuela 2", "Maestro 2", 1, "Abjasia");
 
 -- (NumeroCertificadoGraduacion, Foto, Graduacion, NombreCompleto, PlacaInstructor)
-update Registrado set Graduacion = 1 where Graduacion != 1;
-
 insert into Registrado values(1, null, 1, "A A", 1);
 insert into Registrado values(2, null, 1, "B B", 2);
 insert into Registrado values(3, null, 1, "C C", 1);
@@ -101,12 +99,9 @@ insert into Inscripto values (4, "Formas");
 -- (NumeroCertificadoGraduacion)
 insert into Coach values (8);
 
-select * from Categoria;
-
 -- (IDParticipacion, Resultado, IDCategoria, NombreModalidad, NumeroCertificadoGraduacionCoach)
-call agregar_participacion_individual(1, 8, "Formas", 6, 1);
-call agregar_participacion_individual(2, 8, "Formas", 6, 2);
-call agregar_participacion_individual(3, 8, "Formas", 6, 3);
+call agregar_participacion_individual(1, 8, "Formas", 6, 2);
+call agregar_participacion_individual(2, 8, "Formas", 6, 4);
 
 -- Fin test medallero individual
 
@@ -175,7 +170,4 @@ call add_to_team(14, "Suplente", "Los mas mejores");
 call add_to_team(15, "Suplente", "Los mas mejores");
 call add_to_team(16, "Suplente", "Los mas mejores");
 
-select * from Competidor where NombreEquipo = "Los mas mejores";
-
-select * from SeDivideEn where NombreModalidad = "Combate por equipos";
 call agregar_participacion_equipo("Los mas mejores", 1, 1, 8);

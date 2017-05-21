@@ -52,7 +52,7 @@ BEGIN
         where p.NombreModalidad = NombreModalidad
             and pi.NumeroCertificadoGraduacionCompetidor = NumeroCertificadoGraduacionCompetidor;
 
-    select  ifnull(count(*), 0) > 0 into valid
+    select ifnull(count(*), 0) > 0 into valid
             from Categoria c
             where IDCategoria = c.IDCategoria
                 and c.Graduacion = graduation_competitor
@@ -61,12 +61,12 @@ BEGIN
                 and (c.PesoMinimo <= weight_competitor or c.PesoMinimo is null)
                 and (c.EdadMaxima >= age_competitor or c.EdadMaxima is null)
                 and (c.EdadMinima <= age_competitor or c.EdadMinima is null)
-                and NombreModalidad <> "Equipo"
+                and NombreModalidad <> "Combate por Equipos"
                 and competitor_school = coach_school
                 and NumeroCertificadoGraduacionCoach in (select c.NumeroCertificadoGraduacion from Coach c
                                                             where c.NumeroCertificadoGraduacion <> NumeroCertificadoGraduacionCompetidor);
 
-    IF (valid = true and one_participation_per_modality = true) then
+    IF (valid and one_participation_per_modality) then
         INSERT INTO `Participacion`(
             `IDParticipacion`,
             `Resultado`,

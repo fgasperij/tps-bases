@@ -30,7 +30,7 @@ WHERE
   comp.Sexo = cat.Sexo
   and (cat.Graduacion is null or r.Graduacion = cat.Graduacion)
   and comp.NombreEquipo is not null
-  and i.NombreModalidad != 'Combate por Equipos'
+  and i.NombreModalidad = 'Combate por Equipos'
 group by comp.NombreEquipo
 order by cat.IDCategoria;
 
